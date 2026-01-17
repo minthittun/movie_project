@@ -221,6 +221,63 @@
   align-items: flex-start;
 }
 
+/* Mobile-First Poster Position: Top Horizontal Scroll */
+.movie-detail-poster-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding: var(--spacing-md) 0;
+  margin-bottom: var(--spacing-lg);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.movie-detail-poster-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
+}
+
+.movie-detail-poster-mobile {
+  display: inline-block;
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  margin-right: var(--spacing-lg);
+  vertical-align: top;
+  flex-shrink: 0;
+}
+
+/* Alternative mobile layout: Small poster on the left */
+.movie-detail-mobile-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.movie-detail-mobile-header {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+}
+
+.movie-detail-mobile-poster {
+  width: 120px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  flex-shrink: 0;
+}
+
+.movie-detail-mobile-info {
+  flex: 1;
+  min-width: 0;
+}
+
 .movie-detail-poster {
   width: 320px;
   height: 480px;
@@ -296,4 +353,47 @@
   padding: var(--spacing-xl);
   border-radius: var(--radius-lg);
   border-left: 4px solid var(--netflix-red);
+}
+
+/* Movie Detail Backdrop */
+.movie-detail-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.2);
+  z-index: -1;
+  transition: opacity 0.5s ease;
+}
+
+/* Mobile-optimized movie detail poster */
+@media (max-width: 767px) {
+  .movie-detail-poster {
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Touch-friendly meta items for mobile */
+@media (max-width: 767px) {
+  .meta-item {
+    touch-action: manipulation;
+    user-select: none;
+  }
+}
+
+/* Mobile typography adjustments */
+@media (max-width: 480px) {
+  .movie-detail-title {
+    word-break: break-word;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+  
+  .movie-detail-description {
+    text-align: justify;
+    text-justify: inter-word;
+  }
 }
