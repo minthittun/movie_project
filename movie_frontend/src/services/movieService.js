@@ -25,12 +25,12 @@ const movieService = {
     }
   },
 
-  searchMovies: async (query) => {
+  searchMovies: async (query, page = 1, limit = 10) => {
     try {
       const response = await axios.get(
-        `${apiConfig.baseURL}/movies/search?q=${encodeURIComponent(query)}`,
+        `${apiConfig.baseURL}/movies/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
       );
-      return response.data.data;
+      return response.data;
     } catch (error) {
       throw new Error("Failed to search movies");
     }

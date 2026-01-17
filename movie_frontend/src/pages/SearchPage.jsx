@@ -2,16 +2,28 @@ import React, { useEffect } from "react";
 import MovieCard from "../components/MovieCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
+import Pagination from "../components/Pagination";
 import useMovieStore from "../store/movieStore";
 
 const SearchPage = () => {
-  const { searchResults, searchQuery, loading, error, searchMovies } =
-    useMovieStore();
+  const { 
+    searchResults, 
+    searchQuery, 
+    loading, 
+    error, 
+    searchMovies,
+    searchCurrentPage,
+    searchTotalPages,
+    searchTotalResults,
+    setSearchCurrentPage,
+  } = useMovieStore();
 
   useEffect(() => {
-    const initialQuery = new URLSearchParams(window.location.search).get("q");
+    const queryParams = new URLSearchParams(window.location.search);
+    const initialQuery = queryParams.get("q");
+    const initialPage = parseInt(queryParams.get("page")) || 1;
     if (initialQuery) {
-      searchMovies(initialQuery);
+      searchMovies(initialQuery, initialPage);
     }
   }, [searchMovies]);
 
@@ -20,11 +32,21 @@ const SearchPage = () => {
     const formData = new FormData(e.target);
     const query = formData.get("search");
     if (query.trim()) {
-      searchMovies(query);
+      searchMovies(query, 1);
       // Update URL without page reload
       const newUrl = `/search?q=${encodeURIComponent(query)}`;
       window.history.pushState({}, "", newUrl);
     }
+  };
+
+  const handlePageChange = (page) => {
+    setSearchCurrentPage(page);
+    searchMovies(searchQuery, page);
+    // Update URL without page reload
+    const newUrl = `/search?q=${encodeURIComponent(searchQuery)}&page=${page}`;
+    window.history.pushState({}, "", newUrl);
+    // Scroll to top
+    window.scrollTo(0, 0);
   };
 
   const hasSearched = searchQuery !== "";
@@ -54,7 +76,7 @@ const SearchPage = () => {
           {hasSearched && (
             <p className="search-query">
               {searchResults.length > 0
-                ? `Found ${searchResults.length} results for "${searchQuery}"`
+                ? `Found ${searchTotalResults} results for "${searchQuery}"`
                 : `No results found for "${searchQuery}"`}
             </p>
           )}
@@ -72,11 +94,22 @@ const SearchPage = () => {
         )}
 
         {!loading && !error && hasSearched && searchResults.length > 0 && (
-          <div className="movies-container">
-            {searchResults.map((movie) => (
-              <MovieCard key={movie.id} movie={movie} />
-            ))}
-          </div>
+          <>
+            <div className="movies-container">
+              {searchResults.map((movie) => (
+                <MovieCard key={movie.id} movie={movie} />
+              ))}
+            </div>
+
+            {searchTotalPages > 1 && (
+              <Pagination
+                currentPage={searchCurrentPage}
+                totalPages={searchTotalPages}
+                onPageChange={handlePageChange}
+                loading={loading}
+              />
+            )}
+          </>
         )}
 
         {!loading && !error && hasSearched && searchResults.length === 0 && (

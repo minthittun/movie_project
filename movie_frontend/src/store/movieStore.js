@@ -9,6 +9,9 @@ const useMovieStore = create((set, get) => ({
   loading: false,
   error: null,
   searchQuery: '',
+  searchCurrentPage: 1,
+  searchTotalPages: 1,
+  searchTotalResults: 0,
   currentPage: 1,
   totalPages: 1,
   totalMovies: 0,
@@ -39,16 +42,22 @@ const useMovieStore = create((set, get) => ({
     }
   },
 
-  searchMovies: async (query) => {
+  searchMovies: async (query, page = 1) => {
     if (!query.trim()) {
       set({ searchResults: [], searchQuery: '' });
       return;
     }
     
-    set({ loading: true, error: null, searchQuery: query });
+    set({ loading: true, error: null, searchQuery: query, searchCurrentPage: page });
     try {
-      const results = await movieService.searchMovies(query);
-      set({ searchResults: results, loading: false });
+      const response = await movieService.searchMovies(query, page);
+      set({ 
+        searchResults: response.data, 
+        searchCurrentPage: response.currentPage,
+        searchTotalPages: response.totalPages,
+        searchTotalResults: response.total,
+        loading: false 
+      });
     } catch (error) {
       set({ error: error.message, loading: false });
     }
@@ -65,7 +74,18 @@ const useMovieStore = create((set, get) => ({
   },
 
   clearSearch: () => {
-    set({ searchResults: [], searchQuery: '', error: null });
+    set({ 
+      searchResults: [], 
+      searchQuery: '', 
+      searchCurrentPage: 1,
+      searchTotalPages: 1,
+      searchTotalResults: 0,
+      error: null 
+    });
+  },
+
+  setSearchCurrentPage: (page) => {
+    set({ searchCurrentPage: page });
   },
 
   clearSelectedMovie: () => {
