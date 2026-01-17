@@ -7,6 +7,7 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [localQuery, setLocalQuery] = React.useState("");
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const searchTimeoutRef = useRef(null);
@@ -81,80 +82,188 @@ const Header = () => {
     }
   };
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <header
-      className={`header ${isScrolled ? "scrolled" : ""} ${isSearchFocused ? "search-focused" : ""}`}
-    >
-      <div className="header-content">
-        <Link to="/" className="logo">
-          MovieFlix
-        </Link>
+    <>
+      <header
+        className={`header ${isScrolled ? "scrolled" : ""} ${isSearchFocused ? "search-focused" : ""}`}
+      >
+        <div className="header-content">
+          <Link to="/" className="logo">
+            MovieFlix
+          </Link>
 
-        <nav>
-          <ul className="nav-links">
-            <li>
-              <Link
-                to="/"
-                className={location.pathname === "/" ? "active" : ""}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/movies"
-                className={location.pathname === "/movies" ? "active" : ""}
-              >
-                Movies
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/search"
-                className={location.pathname === "/search" ? "active" : ""}
-              >
-                Search
-              </Link>
-            </li>
-          </ul>
-        </nav>
+          <nav className="desktop-nav">
+            <ul className="nav-links">
+              <li>
+                <Link
+                  to="/"
+                  className={location.pathname === "/" ? "active" : ""}
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movies"
+                  className={location.pathname === "/movies" ? "active" : ""}
+                >
+                  Movies
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/search"
+                  className={location.pathname === "/search" ? "active" : ""}
+                >
+                  Search
+                </Link>
+              </li>
+            </ul>
+          </nav>
 
-        <form className="search-container" onSubmit={handleSearchSubmit}>
-          <div className="search-input-wrapper">
-            <input
-              ref={searchInputRef}
-              type="text"
-              className="search-input"
-              placeholder="Search movies..."
-              value={localQuery}
-              onChange={handleInputChange}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-              onKeyDown={handleKeyDown}
-              aria-label="Search movies"
-            />
-            {localQuery && (
-              <button
-                type="button"
-                className="clear-search-btn"
-                onClick={handleClearSearch}
-                aria-label="Clear search"
-              >
-                ✕
-              </button>
-            )}
-          </div>
+          <form className="search-container" onSubmit={handleSearchSubmit}>
+            <div className="search-input-wrapper">
+              <input
+                ref={searchInputRef}
+                type="text"
+                className="search-input"
+                placeholder="Search movies..."
+                value={localQuery}
+                onChange={handleInputChange}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
+                onKeyDown={handleKeyDown}
+                aria-label="Search movies"
+              />
+              {localQuery && (
+                <button
+                  type="button"
+                  className="clear-search-btn"
+                  onClick={handleClearSearch}
+                  aria-label="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="search-icon"
+              aria-label="Search"
+              title="Search"
+            >
+              🔍
+            </button>
+          </form>
+
           <button
-            type="submit"
-            className="search-icon"
-            aria-label="Search"
-            title="Search"
+            className="mobile-menu-toggle"
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
           >
-            🔍
+            <span
+              className={`hamburger ${isMobileMenuOpen ? "open" : ""}`}
+            ></span>
           </button>
-        </form>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`mobile-menu-overlay ${isMobileMenuOpen ? "open" : ""}`}
+        onClick={closeMobileMenu}
+      >
+        <div
+          className="mobile-menu-content"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="mobile-menu-header">
+            <div className="mobile-menu-title">Menu</div>
+            <button
+              className="mobile-menu-close"
+              onClick={closeMobileMenu}
+              aria-label="Close menu"
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="mobile-nav-items">
+            <ul>
+              <li>
+                <Link
+                  to="/"
+                  className={location.pathname === "/" ? "active" : ""}
+                  onClick={closeMobileMenu}
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movies"
+                  className={location.pathname === "/movies" ? "active" : ""}
+                  onClick={closeMobileMenu}
+                >
+                  Movies
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/search"
+                  className={location.pathname === "/search" ? "active" : ""}
+                  onClick={closeMobileMenu}
+                >
+                  Search
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="mobile-search">
+            <form className="search-container" onSubmit={handleSearchSubmit}>
+              <div className="search-input-wrapper">
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search movies..."
+                  value={localQuery}
+                  onChange={handleInputChange}
+                  aria-label="Search movies in mobile menu"
+                />
+                {localQuery && (
+                  <button
+                    type="button"
+                    className="clear-search-btn"
+                    onClick={handleClearSearch}
+                    aria-label="Clear search"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+              <button
+                type="submit"
+                className="search-icon"
+                aria-label="Search"
+                title="Search"
+              >
+                🔍
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
-    </header>
+    </>
   );
 };
 
