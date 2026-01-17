@@ -85,7 +85,7 @@
 
   /* Hero Section */
   .hero {
-    height: 50vh;
+    height: 100vh;
     min-height: 320px;
     padding: 0 var(--spacing-sm);
   }
@@ -351,7 +351,7 @@
 
   /* Hero Section */
   .hero {
-    height: 60vh;
+    height: 100vh;
     min-height: 400px;
   }
 
@@ -493,7 +493,7 @@
 
   /* Hero Section */
   .hero {
-    height: 70vh;
+    height: 100vh;
     min-height: 500px;
   }
 
@@ -753,8 +753,6 @@
   .mobile-menu-overlay {
     display: none;
   }
-
-
 }
 
 /* Desktop Navigation - Hide on mobile */
@@ -815,7 +813,7 @@
 /* Landscape Orientation for Mobile */
 @media (max-height: 500px) and (max-width: 767px) {
   .hero {
-    height: 40vh;
+    height: 100vh;
     min-height: 250px;
   }
 
