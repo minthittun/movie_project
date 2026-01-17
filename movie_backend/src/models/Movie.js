@@ -49,6 +49,10 @@ const movieSchema = new mongoose.Schema({
     unique: true,
     sparse: true
   },
+  trailerUrl: {
+    type: String,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -78,6 +82,8 @@ movieSchema.virtual('thumbnailUrl').get(function() {
   if (!this.posterPath) return null;
   return `https://image.tmdb.org/t/p/w200${this.posterPath}`;
 });
+
+
 
 movieSchema.set('toJSON', { virtuals: true });
 movieSchema.set('toObject', { virtuals: true });

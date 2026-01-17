@@ -51,12 +51,21 @@ class TMDBService {
     try {
       const response = await this.client.get(`/movie/${movieId}`, {
         params: {
-          append_to_response: "credits",
+          append_to_response: "credits,videos",
         },
       });
       return response.data;
     } catch (error) {
       throw new Error(`Error fetching movie details: ${error.message}`);
+    }
+  }
+
+  async getMovieVideos(movieId) {
+    try {
+      const response = await this.client.get(`/movie/${movieId}/videos`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Error fetching movie videos: ${error.message}`);
     }
   }
 
@@ -80,6 +89,8 @@ class TMDBService {
       tmdbMovie.credits?.crew?.find((person) => person.job === "Director")
         ?.name || "Unknown";
 
+    const trailerUrl = this.getMainTrailerUrl(tmdbMovie.videos?.results || []);
+
     return {
       title: tmdbMovie.title,
       description: tmdbMovie.overview || "No description available",
@@ -95,7 +106,27 @@ class TMDBService {
       tmdbId: tmdbMovie.id,
       posterPath: tmdbMovie.poster_path,
       backdropPath: tmdbMovie.backdrop_path,
+      trailerUrl: trailerUrl,
     };
+  }
+
+  getMainTrailerUrl(videos) {
+    if (!videos || videos.length === 0) return null;
+
+    const trailers = videos
+      .filter(video => 
+        video.type === "Trailer" && 
+        video.site === "YouTube" && 
+        video.key
+      )
+      .sort((a, b) => {
+        if (a.official !== b.official) return b.official - a.official;
+        return new Date(b.published_at) - new Date(a.published_at);
+      });
+
+    if (trailers.length === 0) return null;
+    
+    return `https://www.youtube.com/watch?v=${trailers[0].key}`;
   }
 }
 

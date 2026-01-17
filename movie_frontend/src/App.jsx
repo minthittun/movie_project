@@ -6,6 +6,7 @@ import MoviesPage from "./pages/MoviesPage";
 import SearchPage from "./pages/SearchPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import "./styles/index.css";
+import "./styles/movieDetail.css";
 
 function App() {
   return (

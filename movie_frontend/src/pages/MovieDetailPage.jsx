@@ -71,6 +71,12 @@ const MovieDetailPage = () => {
       />
 
       <div className="movie-detail">
+        <div className="hero-buttons top-buttons">
+          <Link to="/movies" className="btn btn-secondary">
+            <span>←</span>
+            <span>Back to Movies</span>
+          </Link>
+        </div>
         {/* Desktop Layout - Side by Side */}
         <div className="movie-detail-header">
           <img
@@ -120,12 +126,21 @@ const MovieDetailPage = () => {
               {selectedMovie.description || "No description available."}
             </p>
 
-            <div className="hero-buttons">
-              <Link to="/movies" className="btn btn-secondary">
-                <span>←</span>
-                <span>Back to Movies</span>
-              </Link>
-            </div>
+            {selectedMovie.trailerUrl && (
+              <div className="movie-trailer-section">
+                <h3>Trailer</h3>
+                <div className="trailer-container">
+                  <iframe
+                    src={selectedMovie.trailerUrl.replace('watch?v=', 'embed/')}
+                    title={`${selectedMovie.title} Trailer`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="trailer-iframe"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -181,12 +196,21 @@ const MovieDetailPage = () => {
             {selectedMovie.description || "No description available."}
           </p>
 
-          <div className="hero-buttons">
-            <Link to="/movies" className="btn btn-secondary">
-              <span>←</span>
-              <span>Back to Movies</span>
-            </Link>
-          </div>
+          {selectedMovie.trailerUrl && (
+            <div className="movie-trailer-section">
+              <h3>Trailer</h3>
+              <div className="trailer-container">
+                <iframe
+                  src={selectedMovie.trailerUrl.replace('watch?v=', 'embed/')}
+                  title={`${selectedMovie.title} Trailer`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="trailer-iframe"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Optional: Horizontal scroll posters section */}
           {selectedMovie.images && selectedMovie.images.length > 1 && (
