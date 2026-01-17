@@ -135,7 +135,7 @@ const Header = () => {
                 ref={searchInputRef}
                 type="text"
                 className="search-input"
-                placeholder="Search movies..."
+                placeholder="Search movies"
                 value={localQuery}
                 onChange={handleInputChange}
                 onFocus={() => setIsSearchFocused(true)}
@@ -229,38 +229,7 @@ const Header = () => {
             </ul>
           </div>
 
-          <div className="mobile-search">
-            <form className="search-container" onSubmit={handleSearchSubmit}>
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  className="search-input"
-                  placeholder="Search movies..."
-                  value={localQuery}
-                  onChange={handleInputChange}
-                  aria-label="Search movies in mobile menu"
-                />
-                {localQuery && (
-                  <button
-                    type="button"
-                    className="clear-search-btn"
-                    onClick={handleClearSearch}
-                    aria-label="Clear search"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-              <button
-                type="submit"
-                className="search-icon"
-                aria-label="Search"
-                title="Search"
-              >
-                🔍
-              </button>
-            </form>
-          </div>
+
         </div>
       </div>
     </>

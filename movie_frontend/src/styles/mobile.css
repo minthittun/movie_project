@@ -20,6 +20,7 @@
   margin: 4px 0;
   transition: all var(--transition-fast);
   border-radius: 1px;
+  position: relative;
 }
 
 .hamburger::before,
@@ -35,10 +36,12 @@
 
 .hamburger::before {
   top: -6px;
+  left: 0;
 }
 
 .hamburger::after {
   top: 6px;
+  left: 0;
 }
 
 .hamburger.open {
@@ -46,13 +49,13 @@
 }
 
 .hamburger.open::before {
-  top: -6px;
+  top: 0;
   transform: rotate(45deg);
   background: var(--netflix-red);
 }
 
 .hamburger.open::after {
-  top: 6px;
+  top: 0;
   transform: rotate(-45deg);
   background: var(--netflix-red);
 }
@@ -192,12 +195,7 @@
   transform: translateX(4px);
 }
 
-/* Mobile Search */
-.mobile-search {
-  display: none;
-  margin: var(--spacing-lg);
-  padding: 0 var(--spacing-lg);
-}
+
 
 /* Desktop Navigation - Default */
 .desktop-nav {

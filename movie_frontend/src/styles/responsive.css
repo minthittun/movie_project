@@ -33,6 +33,7 @@
     width: 16px;
     height: 1.5px;
     margin: 3px 0;
+    position: relative;
   }
 
   .hamburger::before,
@@ -43,18 +44,20 @@
 
   .hamburger::before {
     top: -5px;
+    left: 0;
   }
 
   .hamburger::after {
     top: 5px;
+    left: 0;
   }
 
   .hamburger.open::before {
-    top: -5px;
+    top: 0;
   }
 
   .hamburger.open::after {
-    top: 5px;
+    top: 0;
   }
 
   .nav-links {
@@ -716,6 +719,7 @@
     width: 20px;
     height: 2.5px;
     margin: 4px 0;
+    position: relative;
   }
 
   .hamburger::before,
@@ -726,18 +730,20 @@
 
   .hamburger::before {
     top: -7px;
+    left: 0;
   }
 
   .hamburger::after {
     top: 7px;
+    left: 0;
   }
 
   .hamburger.open::before {
-    top: -7px;
+    top: 0;
   }
 
   .hamburger.open::after {
-    top: 7px;
+    top: 0;
   }
 
   .desktop-nav {
@@ -748,10 +754,7 @@
     display: none;
   }
 
-  .mobile-search {
-    display: block;
-    margin: var(--spacing-md);
-  }
+
 }
 
 /* Desktop Navigation - Hide on mobile */
@@ -760,8 +763,7 @@
     display: none;
   }
 
-  .mobile-nav,
-  .mobile-search {
+  .mobile-nav {
     display: none;
   }
 
