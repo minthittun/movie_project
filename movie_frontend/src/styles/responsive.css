@@ -1,0 +1,440 @@
+/* Responsive Styles - Breakpoints and Media Queries */
+
+/* Glassmorphism effect for modern browsers */
+@supports (backdrop-filter: blur(10px)) {
+  .header.scrolled {
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+
+  .search-input,
+  .btn-secondary,
+  .meta-item {
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* Tablet Styles */
+@media (max-width: 768px) {
+  .header {
+    padding: var(--spacing-md) 4%;
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+
+  .header-content {
+    gap: var(--spacing-md);
+  }
+
+  .nav-links {
+    gap: var(--spacing-lg);
+  }
+
+  .nav-links a {
+    font-size: 13px;
+  }
+
+  .search-input {
+    width: 200px;
+  }
+
+  .search-input:focus {
+    width: 250px;
+  }
+
+  .hero {
+    height: 70vh;
+    min-height: 500px;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+
+  .hero-buttons {
+    gap: var(--spacing-md);
+  }
+
+  .btn {
+    padding: 12px var(--spacing-lg);
+    font-size: 14px;
+  }
+
+  .movies-container {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+  }
+
+  .movie-card {
+    min-width: 160px;
+  }
+
+  .movie-detail-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--spacing-lg);
+  }
+
+  .movie-detail-poster {
+    width: 240px;
+    height: 360px;
+  }
+
+  .movie-detail-title {
+    font-size: 2.2rem;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .movie-detail-meta {
+    justify-content: center;
+    gap: var(--spacing-md);
+  }
+
+  .meta-item {
+    font-size: 14px;
+    padding: 6px var(--spacing-md);
+  }
+
+  .movie-detail-description {
+    font-size: 1rem;
+    padding: var(--spacing-lg);
+  }
+
+  .search-title {
+    font-size: 2rem;
+  }
+
+  .pagination {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    margin: 30px 0;
+  }
+
+  .pagination-btn {
+    padding: 8px var(--spacing-md);
+    font-size: 12px;
+  }
+
+  .pagination-pages {
+    gap: 4px;
+  }
+
+  .pagination-page {
+    min-width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .movies-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .movies-count {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 480px) {
+  .header {
+    padding: var(--spacing-sm) 4%;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .nav-links {
+    gap: var(--spacing-md);
+  }
+
+  .nav-links a {
+    font-size: 12px;
+  }
+
+  .search-input {
+    width: 180px;
+    font-size: 13px;
+  }
+
+  .search-input:focus {
+    width: 220px;
+  }
+
+  .mobile-nav {
+    width: 260px;
+  }
+
+  .mobile-menu-close {
+    font-size: 20px;
+  }
+
+  .hero {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
+  }
+
+  .movies-container {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--spacing-md);
+  }
+
+  .movie-card {
+    min-width: 140px;
+    border-radius: var(--radius-md);
+  }
+
+  .movie-poster {
+    height: 210px;
+  }
+
+  .movie-info {
+    padding: var(--spacing-md);
+  }
+
+  .movie-title {
+    font-size: 13px;
+  }
+
+  .movie-year {
+    font-size: 12px;
+  }
+
+  .category-title {
+    font-size: 1.3rem;
+  }
+
+  .movie-detail-poster {
+    width: 200px;
+    height: 300px;
+  }
+
+  .movie-detail-title {
+    font-size: 1.8rem;
+  }
+
+  .btn {
+    padding: 10px var(--spacing-lg);
+    font-size: 13px;
+  }
+
+  .movie-card {
+    min-width: 140px;
+    border-radius: var(--radius-md);
+  }
+
+  .movie-poster {
+    height: 260px;
+  }
+
+  .movie-info {
+    padding: var(--spacing-md);
+  }
+
+  .movie-title {
+    font-size: 13px;
+  }
+
+  .movie-year {
+    font-size: 12px;
+  }
+
+  .category-title {
+    font-size: 1.3rem;
+  }
+
+  .movie-detail-poster {
+    width: 200px;
+    height: 300px;
+  }
+
+  .movie-detail-title {
+    font-size: 1.8rem;
+  }
+
+  .btn {
+    padding: 10px var(--spacing-lg);
+    font-size: 13px;
+  }
+
+  .pagination {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    margin: 30px 0;
+  }
+
+  .pagination-btn {
+    padding: 8px var(--spacing-md);
+    font-size: 12px;
+  }
+
+  .pagination-pages {
+    gap: 4px;
+  }
+
+  .pagination-page {
+    min-width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .movies-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .movies-count {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+/* Desktop Navigation Styles - Default */
+@media (min-width: 769px) {
+  .mobile-menu-toggle {
+    display: none;
+  }
+
+  .mobile-nav {
+    display: none;
+  }
+
+  .mobile-search {
+    display: none;
+  }
+
+  .desktop-nav {
+    display: block;
+  }
+
+  .header-content {
+    flex-direction: row;
+    gap: 0;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-links {
+    gap: var(--spacing-xl);
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+  }
+
+  .search-input {
+    width: 280px;
+    margin: 0;
+  }
+
+  .search-input:focus {
+    width: 350px;
+  }
+
+  .mobile-menu-overlay {
+    display: none;
+  }
+}
+
+/* General Adjustments for Different Screen Sizes */
+@media (max-width: 768px) {
+  .logo {
+    font-size: 24px;
+  }
+
+  .nav-links {
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-links a {
+    font-size: 13px;
+  }
+
+  .search-input {
+    width: 240px;
+  }
+
+  .search-input:focus {
+    width: 280px;
+  }
+
+  .hero {
+    height: 60vh;
+    min-height: 400px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
+  }
+
+  .movies-container {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+  }
+
+  .movie-card {
+    min-width: 180px;
+    border-radius: var(--radius-md);
+  }
+
+  .movie-poster {
+    height: 260px;
+  }
+
+  .movie-info {
+    padding: var(--spacing-md);
+  }
+
+  .movie-title {
+    font-size: 13px;
+  }
+
+  .movie-year {
+    font-size: 12px;
+  }
+
+  .category-title {
+    font-size: 1.3rem;
+  }
+
+  .movie-detail-poster {
+    width: 200px;
+    height: 300px;
+  }
+
+  .movie-detail-title {
+    font-size: 1.8rem;
+  }
+
+  .btn {
+    padding: 10px var(--spacing-lg);
+    font-size: 13px;
+  }
+}

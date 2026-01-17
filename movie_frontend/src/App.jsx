@@ -5,7 +5,7 @@ import HomePage from "./pages/HomePage";
 import MoviesPage from "./pages/MoviesPage";
 import SearchPage from "./pages/SearchPage";
 import MovieDetailPage from "./pages/MovieDetailPage";
-import "./styles/netflix.css";
+import "./styles/index.css";
 
 function App() {
   return (

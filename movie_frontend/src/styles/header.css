@@ -1,0 +1,307 @@
+/* Header Component Styles */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-fixed);
+  background: transparent;
+  padding: var(--spacing-xl) 4%;
+  transition: all var(--transition-normal);
+}
+
+.header.scrolled {
+  background: rgba(20, 20, 20, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 15px 4%;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: var(--container-2xl);
+  margin: 0 auto;
+}
+
+/* Logo */
+.logo {
+  font-size: 28px;
+  font-weight: var(--font-weight-extrabold);
+  color: var(--netflix-red);
+  text-decoration: none;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  background: linear-gradient(45deg, var(--netflix-red), #ff6b6b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all var(--transition-normal);
+  position: relative;
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: var(--radius-md);
+}
+
+.logo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    transparent,
+    rgba(229, 9, 20, 0.1),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  border-radius: var(--radius-md);
+  z-index: -1;
+}
+
+.logo:hover {
+  transform: scale(1.05) translateY(-1px);
+  text-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+}
+
+.logo:hover::before {
+  opacity: 1;
+}
+
+/* Navigation */
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: var(--spacing-xl);
+}
+
+.nav-links a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+  transition: all var(--transition-normal);
+  position: relative;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  display: inline-block;
+}
+
+.nav-links a::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    transparent,
+    rgba(229, 9, 20, 0.1),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  border-radius: var(--radius-md);
+  z-index: -1;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--netflix-red), #ff6b6b);
+  transition: all var(--transition-normal);
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+.nav-links a:hover {
+  color: var(--text-primary);
+  transform: translateY(-2px);
+  text-shadow: 0 2px 8px rgba(229, 9, 20, 0.3);
+}
+
+.nav-links a:hover::before {
+  opacity: 1;
+}
+
+.nav-links a:hover::after {
+  width: 80%;
+}
+
+.nav-links a.active {
+  color: var(--text-primary);
+  background: rgba(229, 9, 20, 0.1);
+}
+
+.nav-links a.active::after {
+  width: 80%;
+  box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+}
+
+/* Search Bar */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 45px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  z-index: 10;
+}
+
+.clear-search-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.search-input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 10px var(--spacing-xl);
+  border-radius: var(--radius-full);
+  width: 280px;
+  font-size: 14px;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-normal);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.search-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--netflix-red);
+  width: 350px;
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-normal);
+}
+
+/* Search Icon */
+.search-icon {
+  background: none;
+  border: none;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  z-index: 10;
+}
+
+.search-icon:hover {
+  color: var(--netflix-red);
+  background: rgba(229, 9, 20, 0.1);
+}
+
+.search-input:focus ~ .search-icon {
+  opacity: 1;
+  color: var(--netflix-red);
+}
+
+/* Ensure emoji search icon is visible */
+.search-icon {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.7;
+  transition: all var(--transition-fast);
+  font-family:
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji", "EmojiOne Color", "Android Emoji", sans-serif;
+}
+
+.search-input:focus ~ .search-icon,
+.search-container:focus-within .search-icon {
+  opacity: 1;
+  color: var(--netflix-red);
+}
+
+/* Alternative CSS-only search icon if emoji fails */
+.search-container.no-emoji::after {
+  content: "";
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--text-muted);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.7;
+  transition: all var(--transition-fast);
+}
+
+.search-container.no-emoji::before {
+  content: "";
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--text-muted);
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.7;
+  transition: all var(--transition-fast);
+}
+
+.search-container.no-emoji:focus-within::after,
+.search-container.no-emoji:focus-within::before {
+  opacity: 1;
+  color: var(--netflix-red);
+  border-color: var(--netflix-red);
+  border-top-color: var(--netflix-red);
+}

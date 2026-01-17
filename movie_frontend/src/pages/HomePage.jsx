@@ -20,8 +20,9 @@ const HomePage = () => {
     fetchTrendingMovies();
   }, [fetchMovies, fetchTrendingMovies]);
 
-  const featuredMovie = (trendingMovies && trendingMovies.length > 0 ? trendingMovies[0] : null) || 
-                     (movies && movies.length > 0 ? movies[0] : null);
+  const featuredMovie =
+    (trendingMovies && trendingMovies.length > 0 ? trendingMovies[0] : null) ||
+    (movies && movies.length > 0 ? movies[0] : null);
 
   if (error) {
     return (
@@ -38,7 +39,7 @@ const HomePage = () => {
   }
 
   return (
-    <div className="main-content">
+    <div className="main-content" style={{ marginTop: 0 }}>
       {featuredMovie && (
         <section className="hero">
           <div
