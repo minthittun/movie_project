@@ -2,10 +2,10 @@ import axios from "axios";
 import apiConfig from "../utils/api";
 
 const movieService = {
-  getMovies: async (page = 1, limit = 12) => {
+  getMovies: async (page = 1, limit = 10) => {
     try {
       const response = await axios.get(
-        `${apiConfig.baseURL}/movies?page=${page}&limit=${limit}`
+        `${apiConfig.baseURL}/movies?page=${page}&limit=${limit}`,
       );
       return response.data;
     } catch (error) {
@@ -16,7 +16,7 @@ const movieService = {
   getTrendingMovies: async () => {
     try {
       const response = await axios.get(
-        `${apiConfig.baseURL}/movies/trending?limit=12`
+        `${apiConfig.baseURL}/movies/trending?limit=10`,
       );
       console.log(response.data);
       return response.data;
@@ -28,7 +28,7 @@ const movieService = {
   searchMovies: async (query) => {
     try {
       const response = await axios.get(
-        `${apiConfig.baseURL}/movies/search?q=${encodeURIComponent(query)}`
+        `${apiConfig.baseURL}/movies/search?q=${encodeURIComponent(query)}`,
       );
       return response.data.data;
     } catch (error) {

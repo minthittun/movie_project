@@ -15,7 +15,7 @@ class MovieService {
     try {
       const query = genre ? { genre: genre } : {};
       const movies = await Movie.find(query)
-        .sort({ createdAt: -1 })
+        .sort({ rating: -1 })
         .limit(limit * 1)
         .skip((page - 1) * limit);
 
@@ -78,7 +78,7 @@ class MovieService {
   async getTrendingMovies(limit = 10) {
     try {
       const movies = await Movie.find({ rating: { $gte: 7.0 } })
-        .sort({ rating: -1, createdAt: -1 })
+        .sort({ rating: -1, releaseYear: -1 })
         .limit(limit);
 
       return {
@@ -94,24 +94,27 @@ class MovieService {
 
   async searchMovies(query, page = 1, limit = 10) {
     try {
-      const movies = await Movie.find({
-        $or: [
-          { title: { $regex: query, $options: "i" } },
-          { director: { $regex: query, $options: "i" } },
-          { description: { $regex: query, $options: "i" } },
-        ],
-      })
-        .sort({ createdAt: -1 })
-        .limit(limit * 1)
+      const isNumber = !isNaN(Number(query));
+
+      const searchConditions = [
+        { title: { $regex: query, $options: "i" } },
+        { director: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
+        { genre: { $regex: query, $options: "i" } },
+      ];
+
+      if (isNumber) {
+        searchConditions.push({ releaseYear: Number(query) });
+      }
+
+      const filter = { $or: searchConditions };
+
+      const movies = await Movie.find(filter)
+        .sort({ rating: -1 })
+        .limit(limit)
         .skip((page - 1) * limit);
 
-      const total = await Movie.countDocuments({
-        $or: [
-          { title: { $regex: query, $options: "i" } },
-          { director: { $regex: query, $options: "i" } },
-          { description: { $regex: query, $options: "i" } },
-        ],
-      });
+      const total = await Movie.countDocuments(filter);
 
       return {
         data: movies,
