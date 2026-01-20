@@ -11,9 +11,18 @@ class MovieService {
     }
   }
 
-  async getAllMovies(page = 1, limit = 10, genre = null) {
+  async getAllMovies(page = 1, limit = 10, genre = null, type = null) {
     try {
-      const query = genre ? { genre: genre } : {};
+      const query = {};
+      
+      if (genre) {
+        query.genre = genre;
+      }
+      
+      if (type) {
+        query.type = type;
+      }
+
       const movies = await Movie.find(query)
         .sort({ rating: -1 })
         .limit(limit * 1)
@@ -75,9 +84,15 @@ class MovieService {
     }
   }
 
-  async getTrendingMovies(limit = 10) {
+  async getTrendingMovies(limit = 10, type = null) {
     try {
-      const movies = await Movie.find({ rating: { $gte: 7.0 } })
+      const query = { rating: { $gte: 7.0 } };
+      
+      if (type) {
+        query.type = type;
+      }
+
+      const movies = await Movie.find(query)
         .sort({ rating: -1, releaseYear: -1 })
         .limit(limit);
 
@@ -92,22 +107,35 @@ class MovieService {
     }
   }
 
-  async searchMovies(query, page = 1, limit = 10) {
+  async searchMovies(query, page = 1, limit = 10, type = null) {
     try {
       const isNumber = !isNaN(Number(query));
 
       const searchConditions = [
         { title: { $regex: query, $options: "i" } },
-        { director: { $regex: query, $options: "i" } },
         { description: { $regex: query, $options: "i" } },
         { genre: { $regex: query, $options: "i" } },
       ];
+
+      // Add type-specific search fields
+      if (!type || type === 'movie') {
+        searchConditions.push({ director: { $regex: query, $options: "i" } });
+      }
+      
+      if (!type || type === 'series') {
+        searchConditions.push({ creator: { $regex: query, $options: "i" } });
+        searchConditions.push({ cast: { $regex: query, $options: "i" } });
+      }
 
       if (isNumber) {
         searchConditions.push({ releaseYear: Number(query) });
       }
 
       const filter = { $or: searchConditions };
+      
+      if (type) {
+        filter.type = type;
+      }
 
       const movies = await Movie.find(filter)
         .sort({ rating: -1 })

@@ -22,9 +22,25 @@ const seedDatabase = async () => {
       },
     ];
 
+    const seriesCategories = [
+      {
+        type: "popular_series",
+        fetchFn: () => tmdbService.getPopularSeries(1),
+      },
+      {
+        type: "top_rated_series",
+        fetchFn: () => tmdbService.getTopRatedSeries(1),
+      },
+      {
+        type: "on_the_air_series",
+        fetchFn: () => tmdbService.getOnTheAirSeries(1),
+      },
+    ];
+
     const allMovies = new Set();
     const processedMovies = [];
 
+    // Process movies
     for (const category of movieCategories) {
       console.log(`Fetching ${category.type} movies...`);
 
@@ -61,6 +77,44 @@ const seedDatabase = async () => {
         console.error(
           `Error fetching ${category.type} movies: ${error.message}`,
         );
+      }
+    }
+
+    // Process series
+    for (const category of seriesCategories) {
+      console.log(`Fetching ${category.type}...`);
+
+      try {
+        const response = await category.fetchFn();
+        const series = response.results;
+
+        console.log(`Found ${series.length} ${category.type}`);
+
+        for (const show of series) {
+          if (!allMovies.has(show.id)) {
+            allMovies.add(show.id);
+
+            try {
+              const seriesDetails = await tmdbService.getSeriesDetails(show.id);
+              const transformedSeries =
+                tmdbService.transformSeriesData(seriesDetails);
+
+              if (transformedSeries.title && transformedSeries.description) {
+                processedMovies.push(transformedSeries);
+              }
+            } catch (error) {
+              console.warn(
+                `Could not fetch details for series ID ${show.id}: ${error.message}`,
+              );
+              const basicSeries = tmdbService.transformSeriesData(show);
+              if (basicSeries.title && basicSeries.description) {
+                processedMovies.push(basicSeries);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching ${category.type}: ${error.message}`);
       }
     }
 
@@ -134,7 +188,7 @@ const seedDatabase = async () => {
     } else {
       await Movie.insertMany(processedMovies);
       console.log(
-        `Successfully seeded ${processedMovies.length} movies from TMDB`,
+        `Successfully seeded ${processedMovies.length} movies and series from TMDB`,
       );
     }
 
@@ -154,38 +208,7 @@ const seedDatabaseByMovieName = async (movieNames = []) => {
 
     if (movieNames.length === 0) {
       console.log("No movie names provided. Using default movie names...");
-      movieNames = [
-        "Mickey 17",
-        "Mission: Impossible – The Final Reckoning",
-        "Jurassic World Rebirth",
-        "Captain America: Brave New World",
-        "Thunderbolts",
-        "Zootopia 2",
-        "How to Train Your Dragon",
-        "Lilo & Stitch",
-        "Snow White",
-        "The Black Phone 2",
-        "Sinners",
-        "Marty Supreme",
-        "Good Fortune",
-        "Song Sung Blue",
-        "The Housemaid",
-        "Eephus",
-        "Weapons",
-        "Bring Her Back",
-        "One Battle After Another",
-        "Black Bag",
-        "The Electric State",
-        "The Long Walk",
-        "Predator: Badlands",
-        "Final Destination: Bloodlines",
-        "Another Simple Favor",
-        "Novocaine",
-        "Death of a Unicorn",
-        "A Working Man",
-        "Bride Hard",
-        "Rental Family",
-      ];
+      movieNames = ["Goblin (쓸쓸하고 찬란하神-도깨비)"];
     }
 
     console.log(`Searching for ${movieNames.length} movies...`);
@@ -196,48 +219,76 @@ const seedDatabaseByMovieName = async (movieNames = []) => {
       console.log(`Searching for: "${movieName}"`);
 
       try {
-        const searchResponse = await tmdbService.searchMovies(movieName);
+        const searchResponse = await tmdbService.searchAll(movieName);
 
         if (searchResponse.results && searchResponse.results.length > 0) {
           // Get the first (most relevant) result
-          const movie = searchResponse.results[0];
+          const content = searchResponse.results[0];
 
-          // Skip if we already processed this movie
-          if (foundMovies.has(movie.id)) {
+          // Skip if we already processed this content
+          if (foundMovies.has(content.id)) {
             console.log(
-              `Movie "${movie.title}" already processed, skipping...`,
+              `Content "${content.title || content.name}" already processed, skipping...`,
             );
             continue;
           }
 
-          foundMovies.add(movie.id);
-          console.log(`Found: "${movie.title}" (ID: ${movie.id})`);
+          foundMovies.add(content.id);
+          console.log(
+            `Found: "${content.title || content.name}" (ID: ${content.id}, Type: ${content.media_type})`,
+          );
 
           try {
-            // Get detailed information including credits
-            const movieDetails = await tmdbService.getMovieDetails(movie.id);
-            const transformedMovie =
-              tmdbService.transformMovieData(movieDetails);
+            // Get detailed information based on media type
+            let transformedContent;
+            if (
+              content.media_type === "tv" ||
+              (!content.media_type && content.first_air_date)
+            ) {
+              const seriesDetails = await tmdbService.getSeriesDetails(
+                content.id,
+              );
+              transformedContent =
+                tmdbService.transformSeriesData(seriesDetails);
+            } else {
+              const movieDetails = await tmdbService.getMovieDetails(
+                content.id,
+              );
+              transformedContent = tmdbService.transformMovieData(movieDetails);
+            }
 
             // Validate required fields
-            if (transformedMovie.title && transformedMovie.description) {
-              processedMovies.push(transformedMovie);
-              console.log(`✓ Processed: "${transformedMovie.title}"`);
+            if (transformedContent.title && transformedContent.description) {
+              processedMovies.push(transformedContent);
+              console.log(
+                `✓ Processed: "${transformedContent.title}" (${transformedContent.type})`,
+              );
             } else {
               console.warn(
-                `⚠ Skipped "${movie.title}" - missing required fields`,
+                `⚠ Skipped "${content.title || content.name}" - missing required fields`,
               );
             }
           } catch (detailError) {
             console.warn(
-              `Could not fetch details for "${movie.title}": ${detailError.message}`,
+              `Could not fetch details for "${content.title || content.name}": ${detailError.message}`,
             );
 
-            // Use basic movie data if details fetch fails
-            const basicMovie = tmdbService.transformMovieData(movie);
-            if (basicMovie.title && basicMovie.description) {
-              processedMovies.push(basicMovie);
-              console.log(`✓ Processed basic info for: "${basicMovie.title}"`);
+            // Use basic data if details fetch fails
+            let basicContent;
+            if (
+              content.media_type === "tv" ||
+              (!content.media_type && content.first_air_date)
+            ) {
+              basicContent = tmdbService.transformSeriesData(content);
+            } else {
+              basicContent = tmdbService.transformMovieData(content);
+            }
+
+            if (basicContent.title && basicContent.description) {
+              processedMovies.push(basicContent);
+              console.log(
+                `✓ Processed basic info for: "${basicContent.title}"`,
+              );
             }
           }
         } else {

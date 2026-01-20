@@ -1,11 +1,24 @@
 import { create } from 'zustand';
-import movieService from '../services/movieService';
+import contentService from '../services/contentService';
 
-const useMovieStore = create((set, get) => ({
+const useContentStore = create((set, get) => ({
+  // Movies
   movies: [],
   trendingMovies: [],
+  
+  // Series
+  series: [],
+  trendingSeries: [],
+  
+  // All content
+  content: [],
+  trendingContent: [],
+  
+  // Search results
   searchResults: [],
-  selectedMovie: null,
+  selectedContent: null,
+  
+  // UI state
   loading: false,
   error: null,
   searchQuery: '',
@@ -14,17 +27,18 @@ const useMovieStore = create((set, get) => ({
   searchTotalResults: 0,
   currentPage: 1,
   totalPages: 1,
-  totalMovies: 0,
+  totalContent: 0,
 
+  // Movies methods
   fetchMovies: async (page = 1) => {
     set({ loading: true, error: null });
     try {
-      const response = await movieService.getMovies(page);
+      const response = await contentService.getMovies(page);
       set({ 
         movies: response.data, 
         currentPage: response.currentPage,
         totalPages: response.totalPages,
-        totalMovies: response.total,
+        totalContent: response.total,
         loading: false 
       });
     } catch (error) {
@@ -35,13 +49,68 @@ const useMovieStore = create((set, get) => ({
   fetchTrendingMovies: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await movieService.getTrendingMovies();
+      const response = await contentService.getTrendingMovies();
       set({ trendingMovies: response.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
     }
   },
 
+  // Series methods
+  fetchSeries: async (page = 1) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await contentService.getSeries(page);
+      set({ 
+        series: response.data, 
+        currentPage: response.currentPage,
+        totalPages: response.totalPages,
+        totalContent: response.total,
+        loading: false 
+      });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  fetchTrendingSeries: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await contentService.getTrendingSeries();
+      set({ trendingSeries: response.data, loading: false });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  // All content methods
+  fetchContent: async (page = 1, type = null) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await contentService.getContent(page, 10, type);
+      set({ 
+        content: response.data, 
+        currentPage: response.currentPage,
+        totalPages: response.totalPages,
+        totalContent: response.total,
+        loading: false 
+      });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  fetchTrendingContent: async (type = null) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await contentService.getTrendingContent(type);
+      set({ trendingContent: response.data, loading: false });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  // Search methods
   searchMovies: async (query, page = 1) => {
     if (!query.trim()) {
       set({ searchResults: [], searchQuery: '' });
@@ -50,7 +119,7 @@ const useMovieStore = create((set, get) => ({
     
     set({ loading: true, error: null, searchQuery: query, searchCurrentPage: page });
     try {
-      const response = await movieService.searchMovies(query, page);
+      const response = await contentService.searchMovies(query, page);
       set({ 
         searchResults: response.data, 
         searchCurrentPage: response.currentPage,
@@ -63,16 +132,59 @@ const useMovieStore = create((set, get) => ({
     }
   },
 
-  fetchMovieById: async (id) => {
-    set({ loading: true, error: null });
+  searchSeries: async (query, page = 1) => {
+    if (!query.trim()) {
+      set({ searchResults: [], searchQuery: '' });
+      return;
+    }
+    
+    set({ loading: true, error: null, searchQuery: query, searchCurrentPage: page });
     try {
-      const movie = await movieService.getMovieById(id);
-      set({ selectedMovie: movie, loading: false });
+      const response = await contentService.searchSeries(query, page);
+      set({ 
+        searchResults: response.data, 
+        searchCurrentPage: response.currentPage,
+        searchTotalPages: response.totalPages,
+        searchTotalResults: response.total,
+        loading: false 
+      });
     } catch (error) {
       set({ error: error.message, loading: false });
     }
   },
 
+  searchContent: async (query, page = 1, type = null) => {
+    if (!query.trim()) {
+      set({ searchResults: [], searchQuery: '' });
+      return;
+    }
+    
+    set({ loading: true, error: null, searchQuery: query, searchCurrentPage: page });
+    try {
+      const response = await contentService.searchContent(query, page, 10, type);
+      set({ 
+        searchResults: response.data, 
+        searchCurrentPage: response.currentPage,
+        searchTotalPages: response.totalPages,
+        searchTotalResults: response.total,
+        loading: false 
+      });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  fetchContentById: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      const content = await contentService.getContentById(id);
+      set({ selectedContent: content, loading: false });
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  // Utility methods
   clearSearch: () => {
     set({ 
       searchResults: [], 
@@ -88,8 +200,8 @@ const useMovieStore = create((set, get) => ({
     set({ searchCurrentPage: page });
   },
 
-  clearSelectedMovie: () => {
-    set({ selectedMovie: null });
+  clearSelectedContent: () => {
+    set({ selectedContent: null });
   },
 
   setCurrentPage: (page) => {
@@ -97,4 +209,4 @@ const useMovieStore = create((set, get) => ({
   },
 }));
 
-export default useMovieStore;
+export default useContentStore;

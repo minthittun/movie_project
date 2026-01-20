@@ -1,49 +1,58 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MovieCard from "../components/MovieCard";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 import Pagination from "../components/Pagination";
-import useMovieStore from "../store/movieStore";
+import useContentStore from "../store/movieStore";
 
 const SearchPage = () => {
-  const { 
+  const [searchType, setSearchType] = useState('all');
+  
+const { 
     searchResults, 
     searchQuery, 
     loading, 
     error, 
-    searchMovies,
+    searchContent,
     searchCurrentPage,
     searchTotalPages,
     searchTotalResults,
     setSearchCurrentPage,
-  } = useMovieStore();
+  } = useContentStore();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
     const initialQuery = queryParams.get("q");
     const initialPage = parseInt(queryParams.get("page")) || 1;
+    const initialType = queryParams.get("type") || 'all';
+    
+    setSearchType(initialType);
+    
     if (initialQuery) {
-      searchMovies(initialQuery, initialPage);
+      const type = initialType === 'all' ? null : initialType;
+      searchContent(initialQuery, initialPage, 10, type);
     }
-  }, [searchMovies]);
+  }, [searchContent, setSearchType]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const query = formData.get("search");
     if (query.trim()) {
-      searchMovies(query, 1);
+      const type = searchType === 'all' ? null : searchType;
+      searchContent(query, 1, 10, type);
       // Update URL without page reload
-      const newUrl = `/search?q=${encodeURIComponent(query)}`;
+      const newUrl = `/search?q=${encodeURIComponent(query)}${searchType !== 'all' ? `&type=${searchType}` : ''}`;
       window.history.pushState({}, "", newUrl);
     }
   };
 
   const handlePageChange = (page) => {
     setSearchCurrentPage(page);
-    searchMovies(searchQuery, page);
+    const type = searchType === 'all' ? null : searchType;
+    searchContent(searchQuery, page, 10, type);
     // Update URL without page reload
-    const newUrl = `/search?q=${encodeURIComponent(searchQuery)}&page=${page}`;
+    const newUrl = `/search?q=${encodeURIComponent(searchQuery)}&page=${page}${searchType !== 'all' ? `&type=${searchType}` : ''}`;
     window.history.pushState({}, "", newUrl);
     // Scroll to top
     window.scrollTo(0, 0);
@@ -55,14 +64,37 @@ const SearchPage = () => {
     <div className="main-content">
       <div className="search-results">
         <div className="search-header">
-          <h1 className="search-title">Search Movies</h1>
+          <h1 className="search-title">Search Content</h1>
+
+          <div className="search-type-filters" style={{ marginBottom: "20px" }}>
+            <button 
+              className={`btn ${searchType === 'all' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => setSearchType('all')}
+              style={{ marginRight: '10px' }}
+            >
+              All
+            </button>
+            <button 
+              className={`btn ${searchType === 'movie' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => setSearchType('movie')}
+              style={{ marginRight: '10px' }}
+            >
+              Movies
+            </button>
+            <button 
+              className={`btn ${searchType === 'series' ? 'btn-primary' : 'btn-secondary'}`}
+              onClick={() => setSearchType('series')}
+            >
+              Series
+            </button>
+          </div>
 
           <form onSubmit={handleSearch} className="search-form-container">
             <div style={{ display: "flex", gap: "16px" }}>
               <input
                 type="text"
                 name="search"
-                placeholder="Search for movies..."
+                placeholder={`Search for ${searchType === 'all' ? 'movies and series' : searchType}s...`}
                 defaultValue={searchQuery}
                 className="search-input"
                 style={{ flex: 1 }}
@@ -76,14 +108,14 @@ const SearchPage = () => {
           {hasSearched && (
             <p className="search-query">
               {searchResults.length > 0
-                ? `Found ${searchTotalResults} results for "${searchQuery}"`
-                : `No results found for "${searchQuery}"`}
+                ? `Found ${searchTotalResults} ${searchType === 'all' ? 'content' : searchType + (searchType === 'movie' ? 's' : 'es')} results for "${searchQuery}"`
+                : `No ${searchType === 'all' ? 'content' : searchType} results found for "${searchQuery}"`}
             </p>
           )}
         </div>
 
         {loading && hasSearched && (
-          <LoadingSpinner message="Searching movies..." />
+          <LoadingSpinner message="Searching content..." />
         )}
 
         {error && (
@@ -112,11 +144,28 @@ const SearchPage = () => {
           </>
         )}
 
-        {!loading && !error && hasSearched && searchResults.length === 0 && (
+{!loading && !error && hasSearched && searchResults.length === 0 && (
           <div className="no-results">
             <p className="no-results-text">
               Try searching with different keywords or browse our popular
-              movies.
+              content.
+            </p>
+          </div>
+        )}
+
+        {!hasSearched && !loading && !error && (
+          <div style={{ textAlign: "center", padding: "50px" }}>
+            <h3
+              style={{
+                marginBottom: "20px",
+                color: "rgba(255, 255, 255, 0.7)",
+              }}
+            >
+              Start searching for movies and series
+            </h3>
+            <p style={{ color: "rgba(255, 255, 255, 0.5)" }}>
+              Use search bar above or search feature in the header to
+              find your favorite content.
             </p>
           </div>
         )}

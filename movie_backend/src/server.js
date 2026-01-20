@@ -16,11 +16,16 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Movie Database API",
+    message: "Movie & Series Database API",
     version: "1.0.0",
     endpoints: {
       movies: "/api/movies",
+      series: "/api/series",
+      content: "/api/content",
       search: "/api/movies/search?q=query",
+      series_search: "/api/series/search?q=query",
+      trending_movies: "/api/movies/trending",
+      trending_series: "/api/series/trending",
     },
   });
 });

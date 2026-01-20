@@ -22,8 +22,9 @@ class MovieController {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const genre = req.query.genre || null;
+      const type = req.query.type || null;
 
-      const result = await movieService.getAllMovies(page, limit, genre);
+      const result = await movieService.getAllMovies(page, limit, genre, type);
 
       res.status(200).json(result);
     } catch (error) {
@@ -88,7 +89,8 @@ class MovieController {
   async getTrendingMovies(req, res) {
     try {
       const limit = parseInt(req.query.limit) || 10;
-      const result = await movieService.getTrendingMovies(limit);
+      const type = req.query.type || null;
+      const result = await movieService.getTrendingMovies(limit, type);
 
       res.status(200).json(result);
     } catch (error) {
@@ -104,6 +106,7 @@ class MovieController {
       const query = req.query.q;
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
+      const type = req.query.type || null;
 
       if (!query) {
         return res.status(400).json({
@@ -112,7 +115,62 @@ class MovieController {
         });
       }
 
-      const result = await movieService.searchMovies(query, page, limit);
+      const result = await movieService.searchMovies(query, page, limit, type);
+
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  async getSeries(req, res) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const genre = req.query.genre || null;
+
+      const result = await movieService.getAllMovies(page, limit, genre, 'series');
+
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  async getTrendingSeries(req, res) {
+    try {
+      const limit = parseInt(req.query.limit) || 10;
+      const result = await movieService.getTrendingMovies(limit, 'series');
+
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: error.message,
+      });
+    }
+  }
+
+  async searchSeries(req, res) {
+    try {
+      const query = req.query.q;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+
+      if (!query) {
+        return res.status(400).json({
+          success: false,
+          message: "Search query is required",
+        });
+      }
+
+      const result = await movieService.searchMovies(query, page, limit, 'series');
 
       res.status(200).json(result);
     } catch (error) {

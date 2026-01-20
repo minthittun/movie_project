@@ -1,28 +1,28 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import useMovieStore from "../store/movieStore";
+import useContentStore from "../store/movieStore";
 import MovieRow from "../components/MovieRow";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 
 const HomePage = () => {
   const {
-    movies,
-    trendingMovies,
+    content,
+    trendingContent,
     loading,
     error,
-    fetchMovies,
-    fetchTrendingMovies,
-  } = useMovieStore();
+    fetchContent,
+    fetchTrendingContent,
+  } = useContentStore();
 
   useEffect(() => {
-    fetchMovies();
-    fetchTrendingMovies();
-  }, [fetchMovies, fetchTrendingMovies]);
+    fetchContent();
+    fetchTrendingContent();
+  }, [fetchContent, fetchTrendingContent]);
 
-  const featuredMovie =
-    (trendingMovies && trendingMovies.length > 0 ? trendingMovies[0] : null) ||
-    (movies && movies.length > 0 ? movies[0] : null);
+  const featuredContent =
+    (trendingContent && trendingContent.length > 0 ? trendingContent[0] : null) ||
+    (content && content.length > 0 ? content[0] : null);
 
   if (error) {
     return (
@@ -30,33 +30,40 @@ const HomePage = () => {
         <ErrorMessage
           message={error}
           onRetry={() => {
-            fetchMovies();
-            fetchTrendingMovies();
+            fetchContent();
+            fetchTrendingContent();
           }}
         />
       </div>
     );
   }
 
+  const getFeaturedLink = (content) => {
+    if (content.type === 'series') {
+      return `/series/${content.id}`;
+    }
+    return `/movie/${content.id}`;
+  };
+
   return (
     <div className="main-content" style={{ marginTop: 0 }}>
-      {featuredMovie && (
+      {featuredContent && (
         <section className="hero">
           <div
             className="hero-bg"
             style={{
-              backgroundImage: `url(${featuredMovie.backdropUrl})`,
+              backgroundImage: `url(${featuredContent.backdropUrl})`,
             }}
           />
           <div className="hero-content">
-            <h1 className="hero-title">{featuredMovie.title}</h1>
+            <h1 className="hero-title">{featuredContent.title}</h1>
             <p className="hero-description">
-              {featuredMovie.description ||
+              {featuredContent.description ||
                 "Discover amazing movies and TV shows in our vast collection."}
             </p>
             <div className="hero-buttons">
               <Link
-                to={`/movie/${featuredMovie.id}`}
+                to={getFeaturedLink(featuredContent)}
                 className="btn btn-primary"
               >
                 <span>▶</span>
@@ -64,7 +71,7 @@ const HomePage = () => {
               </Link>
               <Link to="/movies" className="btn btn-secondary">
                 <span>ℹ</span>
-                <span>More Movies</span>
+                <span>Browse Content</span>
               </Link>
             </div>
           </div>
@@ -73,14 +80,14 @@ const HomePage = () => {
 
       <MovieRow
         title="Trending Now"
-        movies={trendingMovies}
+        movies={trendingContent}
         loading={loading}
         scrollable={true}
       />
 
       <MovieRow
-        title="Movies"
-        movies={movies}
+        title="Browse Content"
+        movies={content}
         loading={loading}
         scrollable={true}
       />

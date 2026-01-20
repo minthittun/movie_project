@@ -16,14 +16,32 @@ const movieSchema = new mongoose.Schema({
     min: 1800,
     max: new Date().getFullYear()
   },
+  endYear: {
+    type: Number,
+    min: 1800,
+    max: new Date().getFullYear() + 50
+  },
   genre: {
     type: [String],
     required: true
   },
   director: {
     type: String,
-    required: true,
+    required: function() {
+      return this.type === 'movie';
+    },
     trim: true
+  },
+  creator: {
+    type: String,
+    required: function() {
+      return this.type === 'series';
+    },
+    trim: true
+  },
+  cast: {
+    type: [String],
+    default: []
   },
   rating: {
     type: Number,
@@ -33,8 +51,35 @@ const movieSchema = new mongoose.Schema({
   },
   duration: {
     type: Number,
-    required: true,
+    required: function() {
+      return this.type === 'movie';
+    },
     min: 1
+  },
+  seasons: {
+    type: Number,
+    required: function() {
+      return this.type === 'series';
+    },
+    min: 1
+  },
+  episodes: {
+    type: Number,
+    required: function() {
+      return this.type === 'series';
+    },
+    min: 1
+  },
+  type: {
+    type: String,
+    required: true,
+    enum: ['movie', 'series'],
+    default: 'movie'
+  },
+  status: {
+    type: String,
+    enum: ['Released', 'In Production', 'Planned', 'Canceled', 'Returning Series', 'Ended'],
+    default: 'Released'
   },
   posterPath: {
     type: String,

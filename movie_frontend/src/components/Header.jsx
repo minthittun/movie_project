@@ -1,9 +1,9 @@
 import React, { useCallback, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import useMovieStore from "../store/movieStore";
+import useContentStore from "../store/movieStore";
 
 const Header = () => {
-  const { searchQuery, searchMovies, clearSearch } = useMovieStore();
+  const { searchQuery, searchContent, clearSearch } = useContentStore();
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [localQuery, setLocalQuery] = React.useState("");
   const [isSearchFocused, setIsSearchFocused] = React.useState(false);
@@ -36,7 +36,7 @@ const Header = () => {
 
       searchTimeoutRef.current = setTimeout(() => {
         if (query.trim()) {
-          searchMovies(query);
+          searchContent(query);
           if (location.pathname !== "/search") {
             navigate("/search");
           }
@@ -48,7 +48,7 @@ const Header = () => {
         }
       }, 300);
     },
-    [searchMovies, clearSearch, navigate, location.pathname],
+    [searchContent, clearSearch, navigate, location.pathname],
   );
 
   const handleInputChange = (e) => {
@@ -60,7 +60,7 @@ const Header = () => {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (localQuery.trim()) {
-      searchMovies(localQuery);
+      searchContent(localQuery);
       if (location.pathname !== "/search") {
         navigate("/search");
       }
@@ -97,7 +97,7 @@ const Header = () => {
       >
         <div className="header-content">
           <Link to="/" className="logo">
-            MovieFlix
+            CineHub
           </Link>
 
           <nav className="desktop-nav">
@@ -120,6 +120,14 @@ const Header = () => {
               </li>
               <li>
                 <Link
+                  to="/series"
+                  className={location.pathname === "/series" ? "active" : ""}
+                >
+                  Series
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/search"
                   className={location.pathname === "/search" ? "active" : ""}
                 >
@@ -135,13 +143,13 @@ const Header = () => {
                 ref={searchInputRef}
                 type="text"
                 className="search-input"
-                placeholder="Search movies"
+                placeholder="Search movies and series"
                 value={localQuery}
                 onChange={handleInputChange}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
                 onKeyDown={handleKeyDown}
-                aria-label="Search movies"
+                aria-label="Search movies and series"
               />
               {localQuery && (
                 <button
@@ -208,24 +216,33 @@ const Header = () => {
                   Home
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/movies"
-                  className={location.pathname === "/movies" ? "active" : ""}
-                  onClick={closeMobileMenu}
-                >
-                  Movies
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/search"
-                  className={location.pathname === "/search" ? "active" : ""}
-                  onClick={closeMobileMenu}
-                >
-                  Search
-                </Link>
-              </li>
+<li>
+                 <Link
+                   to="/movies"
+                   className={location.pathname === "/movies" ? "active" : ""}
+                   onClick={closeMobileMenu}
+                 >
+                   Movies
+                 </Link>
+               </li>
+               <li>
+                 <Link
+                   to="/series"
+                   className={location.pathname === "/series" ? "active" : ""}
+                   onClick={closeMobileMenu}
+                 >
+                   Series
+                 </Link>
+               </li>
+               <li>
+                 <Link
+                   to="/search"
+                   className={location.pathname === "/search" ? "active" : ""}
+                   onClick={closeMobileMenu}
+                 >
+                   Search
+                 </Link>
+               </li>
             </ul>
           </div>
 
