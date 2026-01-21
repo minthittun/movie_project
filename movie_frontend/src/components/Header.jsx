@@ -143,13 +143,13 @@ const Header = () => {
                 ref={searchInputRef}
                 type="text"
                 className="search-input"
-                placeholder="Search movies and series"
+                placeholder="Search ..."
                 value={localQuery}
                 onChange={handleInputChange}
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
                 onKeyDown={handleKeyDown}
-                aria-label="Search movies and series"
+                aria-label="Search ..."
               />
               {localQuery && (
                 <button
@@ -216,37 +216,35 @@ const Header = () => {
                   Home
                 </Link>
               </li>
-<li>
-                 <Link
-                   to="/movies"
-                   className={location.pathname === "/movies" ? "active" : ""}
-                   onClick={closeMobileMenu}
-                 >
-                   Movies
-                 </Link>
-               </li>
-               <li>
-                 <Link
-                   to="/series"
-                   className={location.pathname === "/series" ? "active" : ""}
-                   onClick={closeMobileMenu}
-                 >
-                   Series
-                 </Link>
-               </li>
-               <li>
-                 <Link
-                   to="/search"
-                   className={location.pathname === "/search" ? "active" : ""}
-                   onClick={closeMobileMenu}
-                 >
-                   Search
-                 </Link>
-               </li>
+              <li>
+                <Link
+                  to="/movies"
+                  className={location.pathname === "/movies" ? "active" : ""}
+                  onClick={closeMobileMenu}
+                >
+                  Movies
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/series"
+                  className={location.pathname === "/series" ? "active" : ""}
+                  onClick={closeMobileMenu}
+                >
+                  Series
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/search"
+                  className={location.pathname === "/search" ? "active" : ""}
+                  onClick={closeMobileMenu}
+                >
+                  Search
+                </Link>
+              </li>
             </ul>
           </div>
-
-
         </div>
       </div>
     </>

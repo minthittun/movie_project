@@ -4,6 +4,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 import Pagination from "../components/Pagination";
 import contentService from "../services/contentService";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const SeriesPage = () => {
   const [series, setSeries] = useState([]);
@@ -34,6 +35,8 @@ const SeriesPage = () => {
   useEffect(() => {
     fetchSeries(currentPage);
   }, [currentPage]);
+
+  useDocumentTitle("TV Series");
 
   const handlePageChange = (page) => {
     setCurrentPage(page);

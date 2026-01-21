@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 import useMovieStore from "../store/movieStore";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const MovieDetailPage = () => {
   const { id } = useParams();
@@ -49,6 +50,7 @@ const MovieDetailPage = () => {
   }
 
   if (!selectedMovie) {
+    useDocumentTitle("Movie Not Found");
     return (
       <div className="main-content">
         <div className="error">
@@ -60,6 +62,9 @@ const MovieDetailPage = () => {
       </div>
     );
   }
+
+  // Set dynamic title with movie title
+  useDocumentTitle(selectedMovie.title);
 
   return (
     <div className="main-content">

@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 import useContentStore from "../store/movieStore";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const ContentDetailPage = () => {
   const { id } = useParams();
@@ -67,6 +68,7 @@ const ContentDetailPage = () => {
   }
 
   if (!selectedContent) {
+    useDocumentTitle("Content Not Found");
     return (
       <div className="main-content">
         <div className="error">
@@ -81,6 +83,9 @@ const ContentDetailPage = () => {
 
   const contentType = selectedContent.type || 'movie';
   const isSeries = contentType === 'series';
+
+  // Set dynamic title with content title and type
+  useDocumentTitle(`${selectedContent.title} (${isSeries ? 'Series' : 'Movie'})`);
 
   return (
     <div className="main-content">

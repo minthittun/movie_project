@@ -2,27 +2,30 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import useContentStore from "../store/movieStore";
 import MovieRow from "../components/MovieRow";
+import FeaturedContentCarousel from "../components/FeaturedContentCarousel";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const HomePage = () => {
   const {
-    content,
-    trendingContent,
+    trendingMovies,
+    trendingSeries,
     loading,
     error,
-    fetchContent,
-    fetchTrendingContent,
+    fetchTrendingMovies,
+    fetchTrendingSeries,
   } = useContentStore();
 
   useEffect(() => {
-    fetchContent();
-    fetchTrendingContent();
-  }, [fetchContent, fetchTrendingContent]);
+    fetchTrendingMovies();
+    fetchTrendingSeries();
+  }, [fetchTrendingMovies, fetchTrendingSeries]);
 
-  const featuredContent =
-    (trendingContent && trendingContent.length > 0 ? trendingContent[0] : null) ||
-    (content && content.length > 0 ? content[0] : null);
+  useDocumentTitle("Home");
+
+  const featuredMovie = trendingMovies && trendingMovies.length > 0 ? trendingMovies[0] : null;
+  const featuredSeries = trendingSeries && trendingSeries.length > 0 ? trendingSeries[0] : null;
 
   if (error) {
     return (
@@ -30,64 +33,33 @@ const HomePage = () => {
         <ErrorMessage
           message={error}
           onRetry={() => {
-            fetchContent();
-            fetchTrendingContent();
+            fetchTrendingMovies();
+            fetchTrendingSeries();
           }}
         />
       </div>
     );
   }
 
-  const getFeaturedLink = (content) => {
-    if (content.type === 'series') {
-      return `/series/${content.id}`;
-    }
-    return `/movie/${content.id}`;
-  };
-
   return (
     <div className="main-content" style={{ marginTop: 0 }}>
-      {featuredContent && (
-        <section className="hero">
-          <div
-            className="hero-bg"
-            style={{
-              backgroundImage: `url(${featuredContent.backdropUrl})`,
-            }}
-          />
-          <div className="hero-content">
-            <h1 className="hero-title">{featuredContent.title}</h1>
-            <p className="hero-description">
-              {featuredContent.description ||
-                "Discover amazing movies and TV shows in our vast collection."}
-            </p>
-            <div className="hero-buttons">
-              <Link
-                to={getFeaturedLink(featuredContent)}
-                className="btn btn-primary"
-              >
-                <span>▶</span>
-                <span>Watch Now</span>
-              </Link>
-              <Link to="/movies" className="btn btn-secondary">
-                <span>ℹ</span>
-                <span>Browse Content</span>
-              </Link>
-            </div>
-          </div>
-        </section>
+      {(featuredMovie || featuredSeries) && (
+        <FeaturedContentCarousel
+          featuredMovie={featuredMovie}
+          featuredSeries={featuredSeries}
+        />
       )}
 
       <MovieRow
-        title="Trending Now"
-        movies={trendingContent}
+        title="Trending Movies"
+        movies={trendingMovies}
         loading={loading}
         scrollable={true}
       />
 
       <MovieRow
-        title="Browse Content"
-        movies={content}
+        title="Trending Series"
+        movies={trendingSeries}
         loading={loading}
         scrollable={true}
       />

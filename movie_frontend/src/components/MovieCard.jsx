@@ -21,23 +21,23 @@ const MovieCard = ({ movie, size = "medium" }) => {
     if (!type) return null;
     return (
       <div className="content-type-badge">
-        <span>{type === 'series' ? '📺' : '🎬'}</span>
+        <span>{type === "series" ? "📺" : "🎬"}</span>
       </div>
     );
   };
 
   const getInfo = (content) => {
-    if (content.type === 'series') {
+    if (content.type === "series") {
       return {
         year: content.releaseYear,
-        detail: `${content.seasons || 1} Season${(content.seasons || 1) > 1 ? 's' : ''}`,
-        link: `/series/${content.id}`
+        detail: `${getYear(content.releaseYear)} - ${content.seasons || 1} Season${(content.seasons || 1) > 1 ? "s" : ""}`,
+        link: `/series/${content.id}`,
       };
     }
     return {
       year: content.releaseYear,
       detail: `${getYear(content.releaseYear)}`,
-      link: `/movie/${content.id}`
+      link: `/movie/${content.id}`,
     };
   };
 

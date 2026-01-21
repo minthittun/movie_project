@@ -4,6 +4,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 import Pagination from "../components/Pagination";
 import contentService from "../services/contentService";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const MoviesPage = () => {
   const [movies, setMovies] = useState([]);
@@ -34,6 +35,8 @@ const MoviesPage = () => {
   useEffect(() => {
     fetchMovies(currentPage);
   }, [currentPage]);
+
+  useDocumentTitle("Movies");
 
   const handlePageChange = (page) => {
     setCurrentPage(page);

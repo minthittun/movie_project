@@ -5,6 +5,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import Pagination from "../components/Pagination";
 import contentService from "../services/contentService";
 import useMovieStore from "../store/movieStore";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const SearchPage = () => {
   const storeSearchResults = useMovieStore(state => state.searchResults);
@@ -87,6 +88,9 @@ const SearchPage = () => {
   };
 
   const hasSearched = searchQuery !== "";
+
+  // Set dynamic title based on search query
+  useDocumentTitle(hasSearched ? `Search: "${searchQuery}"` : "Search");
 
   return (
     <div className="main-content">
