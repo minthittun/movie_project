@@ -6,14 +6,14 @@ import useMovieStore from "../store/movieStore";
 
 const MovieDetailPage = () => {
   const { id } = useParams();
-  const { selectedMovie, loading, error, fetchMovieById } = useMovieStore();
+  const { selectedContent: selectedMovie, loading, error, fetchContentById } = useMovieStore();
 
   useEffect(() => {
     if (id) {
-      fetchMovieById(id);
+      fetchContentById(id);
       window.scrollTo(0, 0); // Scroll to top when loading new movie
     }
-  }, [id, fetchMovieById]);
+  }, [id, fetchContentById]);
 
   const getYear = (releaseYear) => {
     if (!releaseYear) return "N/A";
@@ -43,7 +43,7 @@ const MovieDetailPage = () => {
   if (error) {
     return (
       <div className="main-content">
-        <ErrorMessage message={error} onRetry={() => fetchMovieById(id)} />
+        <ErrorMessage message={error} onRetry={() => fetchContentById(id)} />
       </div>
     );
   }

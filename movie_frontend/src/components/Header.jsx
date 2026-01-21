@@ -38,7 +38,7 @@ const Header = () => {
         if (query.trim()) {
           searchContent(query);
           if (location.pathname !== "/search") {
-            navigate("/search");
+            navigate(`/search?q=${encodeURIComponent(query)}`);
           }
         } else {
           clearSearch();
@@ -62,7 +62,7 @@ const Header = () => {
     if (localQuery.trim()) {
       searchContent(localQuery);
       if (location.pathname !== "/search") {
-        navigate("/search");
+        navigate(`/search?q=${encodeURIComponent(localQuery)}`);
       }
     }
   };

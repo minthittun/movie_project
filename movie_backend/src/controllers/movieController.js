@@ -27,9 +27,9 @@ class MovieController {
         rating: req.query.rating ? parseFloat(req.query.rating) : null,
         year: req.query.year ? parseInt(req.query.year) : null,
         status: req.query.status || null,
-        sortBy: req.query.sortBy || 'rating',
-        sortOrder: req.query.sortOrder || 'desc',
-        trending: req.query.trending === 'true',
+        sortBy: req.query.sortBy || "rating",
+        sortOrder: req.query.sortOrder || "desc",
+        trending: req.query.trending === "true",
       };
 
       const result = await movieService.getContent(filters);
@@ -96,8 +96,8 @@ class MovieController {
 
   async searchContent(req, res) {
     try {
-      const query = req.query.q;
-      
+      const { query } = req.query;
+
       if (!query) {
         return res.status(400).json({
           success: false,
@@ -113,8 +113,8 @@ class MovieController {
         genre: req.query.genre || null,
         rating: req.query.rating ? parseFloat(req.query.rating) : null,
         year: req.query.year ? parseInt(req.query.year) : null,
-        sortBy: req.query.sortBy || 'rating',
-        sortOrder: req.query.sortOrder || 'desc',
+        sortBy: req.query.sortBy || "rating",
+        sortOrder: req.query.sortOrder || "desc",
       };
 
       const result = await movieService.searchContent(filters);
