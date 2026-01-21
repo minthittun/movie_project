@@ -1,5 +1,146 @@
 /* Movie Cards and Movie Detail Styles */
 
+/* Content Filters */
+.content-filters {
+  background: rgba(255, 255, 255, 0.03);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.filter-select,
+.filter-input {
+  background: var(--dark-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 10px var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  min-width: 150px;
+  transition: all var(--transition-fast);
+}
+
+.filter-select:focus,
+.filter-input:focus {
+  outline: none;
+  border-color: var(--netflix-red);
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
+}
+
+.filter-input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Search Form Container */
+.search-form-container {
+  margin-bottom: var(--spacing-lg);
+}
+
+.search-input {
+  background: var(--dark-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 12px var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  transition: all var(--transition-fast);
+  width: 100%;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--netflix-red);
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
+}
+
+.search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Content Type Filters */
+.content-type-filters,
+.search-type-filters {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.content-type-filters .btn,
+.search-type-filters .btn {
+  padding: 8px var(--spacing-lg);
+  font-size: 14px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+.content-type-filters .btn-primary,
+.search-type-filters .btn-primary {
+  background: var(--netflix-red);
+  color: white;
+  border-color: var(--netflix-red);
+}
+
+.content-type-filters .btn-secondary,
+.search-type-filters .btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+.content-type-filters .btn-secondary:hover,
+.search-type-filters .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+/* Mobile Responsive Filters */
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-select,
+  .filter-input {
+    width: 100%;
+    min-width: unset;
+  }
+  
+  .content-type-filters,
+  .search-type-filters {
+    justify-content: center;
+  }
+  
+  .content-type-filters .btn,
+  .search-type-filters .btn {
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-row {
+    gap: var(--spacing-sm);
+  }
+  
+  .filter-select,
+  .filter-input {
+    padding: 8px var(--spacing-sm);
+    font-size: 13px;
+  }
+}
+
 /* Movie Categories */
 .movie-category {
   padding: var(--spacing-2xl) 4%;

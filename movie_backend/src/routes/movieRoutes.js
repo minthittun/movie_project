@@ -1,25 +1,20 @@
-import { Router } from 'express';
-import movieController from '../controllers/movieController.js';
+import { Router } from "express";
+import movieController from "../controllers/movieController.js";
 
 const router = Router();
 
-// Movie endpoints
-router.post('/movies', movieController.createMovie);
-router.get('/movies', movieController.getAllMovies);
-router.get('/movies/trending', movieController.getTrendingMovies);
-router.get('/movies/search', movieController.searchMovies);
-router.get('/movies/:id', movieController.getMovieById);
-router.put('/movies/:id', movieController.updateMovie);
-router.delete('/movies/:id', movieController.deleteMovie);
+// Unified content endpoint
+router.post("/content", movieController.createMovie);
+router.get("/content", movieController.getContent);
+router.get("/content/search", movieController.searchContent);
+router.get("/content/:id", movieController.getMovieById);
+router.put("/content/:id", movieController.updateMovie);
+router.delete("/content/:id", movieController.deleteMovie);
 
-// Series endpoints
-router.get('/series', movieController.getSeries);
-router.get('/series/trending', movieController.getTrendingSeries);
-router.get('/series/search', movieController.searchSeries);
-
-// Combined content endpoints
-router.get('/content', movieController.getAllMovies);
-router.get('/content/trending', movieController.getTrendingMovies);
-router.get('/content/search', movieController.searchMovies);
+// Legacy endpoints for backward compatibility (redirect to unified endpoint)
+router.get("/movies", movieController.getContent);
+router.get("/movies/search", movieController.searchContent);
+router.get("/series", movieController.getContent);
+router.get("/series/search", movieController.searchContent);
 
 export default router;

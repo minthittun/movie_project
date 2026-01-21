@@ -6,7 +6,7 @@ class MovieController {
       const movie = await movieService.createMovie(req.body);
       res.status(201).json({
         success: true,
-        message: "Movie created successfully",
+        message: "Content created successfully",
         data: movie,
       });
     } catch (error) {
@@ -17,14 +17,22 @@ class MovieController {
     }
   }
 
-  async getAllMovies(req, res) {
+  async getContent(req, res) {
     try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const genre = req.query.genre || null;
-      const type = req.query.type || null;
+      const filters = {
+        page: parseInt(req.query.page) || 1,
+        limit: parseInt(req.query.limit) || 10,
+        type: req.query.type || null,
+        genre: req.query.genre || null,
+        rating: req.query.rating ? parseFloat(req.query.rating) : null,
+        year: req.query.year ? parseInt(req.query.year) : null,
+        status: req.query.status || null,
+        sortBy: req.query.sortBy || 'rating',
+        sortOrder: req.query.sortOrder || 'desc',
+        trending: req.query.trending === 'true',
+      };
 
-      const result = await movieService.getAllMovies(page, limit, genre, type);
+      const result = await movieService.getContent(filters);
 
       res.status(200).json(result);
     } catch (error) {
@@ -41,7 +49,7 @@ class MovieController {
 
       res.status(200).json({
         success: true,
-        message: "Movie retrieved successfully",
+        message: "Content retrieved successfully",
         data: movie,
       });
     } catch (error) {
@@ -58,7 +66,7 @@ class MovieController {
 
       res.status(200).json({
         success: true,
-        message: "Movie updated successfully",
+        message: "Content updated successfully",
         data: movie,
       });
     } catch (error) {
@@ -75,7 +83,7 @@ class MovieController {
 
       res.status(200).json({
         success: true,
-        message: "Movie deleted successfully",
+        message: "Content deleted successfully",
         data: movie,
       });
     } catch (error) {
@@ -86,28 +94,10 @@ class MovieController {
     }
   }
 
-  async getTrendingMovies(req, res) {
-    try {
-      const limit = parseInt(req.query.limit) || 10;
-      const type = req.query.type || null;
-      const result = await movieService.getTrendingMovies(limit, type);
-
-      res.status(200).json(result);
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
-  }
-
-  async searchMovies(req, res) {
+  async searchContent(req, res) {
     try {
       const query = req.query.q;
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const type = req.query.type || null;
-
+      
       if (!query) {
         return res.status(400).json({
           success: false,
@@ -115,62 +105,19 @@ class MovieController {
         });
       }
 
-      const result = await movieService.searchMovies(query, page, limit, type);
+      const filters = {
+        query,
+        page: parseInt(req.query.page) || 1,
+        limit: parseInt(req.query.limit) || 10,
+        type: req.query.type || null,
+        genre: req.query.genre || null,
+        rating: req.query.rating ? parseFloat(req.query.rating) : null,
+        year: req.query.year ? parseInt(req.query.year) : null,
+        sortBy: req.query.sortBy || 'rating',
+        sortOrder: req.query.sortOrder || 'desc',
+      };
 
-      res.status(200).json(result);
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
-  }
-
-  async getSeries(req, res) {
-    try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-      const genre = req.query.genre || null;
-
-      const result = await movieService.getAllMovies(page, limit, genre, 'series');
-
-      res.status(200).json(result);
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
-  }
-
-  async getTrendingSeries(req, res) {
-    try {
-      const limit = parseInt(req.query.limit) || 10;
-      const result = await movieService.getTrendingMovies(limit, 'series');
-
-      res.status(200).json(result);
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error.message,
-      });
-    }
-  }
-
-  async searchSeries(req, res) {
-    try {
-      const query = req.query.q;
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 10;
-
-      if (!query) {
-        return res.status(400).json({
-          success: false,
-          message: "Search query is required",
-        });
-      }
-
-      const result = await movieService.searchMovies(query, page, limit, 'series');
+      const result = await movieService.searchContent(filters);
 
       res.status(200).json(result);
     } catch (error) {

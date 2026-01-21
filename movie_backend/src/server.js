@@ -16,16 +16,31 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Movie & Series Database API",
-    version: "1.0.0",
-    endpoints: {
-      movies: "/api/movies",
-      series: "/api/series",
-      content: "/api/content",
-      search: "/api/movies/search?q=query",
-      series_search: "/api/series/search?q=query",
-      trending_movies: "/api/movies/trending",
-      trending_series: "/api/series/trending",
+    message: "Unified Content API - Movies & Series",
+    version: "2.0.0",
+    unified_endpoint: "/api/content",
+    parameters: {
+      type: "movie|series (filter by content type)",
+      genre: "string (filter by genre)",
+      rating: "number (minimum rating filter)",
+      year: "number (filter by release year)",
+      status: "string (filter by status)",
+      trending: "true|false (filter trending content)",
+      page: "number (pagination)",
+      limit: "number (items per page)",
+      sortBy: "title|rating|releaseYear|createdAt|updatedAt",
+      sortOrder: "asc|desc",
+    },
+    examples: {
+      all_content: "/api/content",
+      movies_only: "/api/content?type=movie",
+      trending_series: "/api/content?type=series&trending=true",
+      action_movies_high_rating: "/api/content?type=movie&genre=Action&rating=7.5",
+      search: "/api/content/search?q=dragon&type=movie",
+    },
+    legacy_endpoints: {
+      movies: "/api/movies (redirects to /api/content)",
+      series: "/api/series (redirects to /api/content)",
     },
   });
 });

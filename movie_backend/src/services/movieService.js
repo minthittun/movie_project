@@ -7,37 +7,88 @@ class MovieService {
       await movie.save();
       return movie;
     } catch (error) {
-      throw new Error(`Error creating movie: ${error.message}`);
+      throw new Error(`Error creating content: ${error.message}`);
     }
   }
 
-  async getAllMovies(page = 1, limit = 10, genre = null, type = null) {
-    try {
-      const query = {};
-      
-      if (genre) {
-        query.genre = genre;
-      }
-      
-      if (type) {
-        query.type = type;
-      }
+  async buildFilters(filters) {
+    const query = {};
 
-      const movies = await Movie.find(query)
-        .sort({ rating: -1 })
-        .limit(limit * 1)
-        .skip((page - 1) * limit);
+    // Content type filter
+    if (filters.type && ['movie', 'series'].includes(filters.type)) {
+      query.type = filters.type;
+    }
+
+    // Genre filter (array contains)
+    if (filters.genre) {
+      query.genre = { $in: [filters.genre] };
+    }
+
+    // Rating filter (minimum rating)
+    if (filters.rating) {
+      query.rating = { $gte: filters.rating };
+    }
+
+    // Year filter
+    if (filters.year) {
+      query.releaseYear = filters.year;
+    }
+
+    // Status filter
+    if (filters.status) {
+      query.status = filters.status;
+    }
+
+    // Trending filter (high-rated content)
+    if (filters.trending) {
+      query.rating = { $gte: 7.0 };
+    }
+
+    return query;
+  }
+
+  async buildSort(sortBy, sortOrder) {
+    const sort = {};
+    const validSortFields = ['title', 'rating', 'releaseYear', 'createdAt', 'updatedAt'];
+    const validSortOrders = ['asc', 'desc'];
+
+    if (validSortFields.includes(sortBy) && validSortOrders.includes(sortOrder)) {
+      sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    } else {
+      sort.rating = -1; // Default sort
+    }
+
+    return sort;
+  }
+
+  async getContent(filters) {
+    try {
+      const query = await this.buildFilters(filters);
+      const sort = await this.buildSort(filters.sortBy, filters.sortOrder);
+
+      const content = await Movie.find(query)
+        .sort(sort)
+        .limit(filters.limit * 1)
+        .skip((filters.page - 1) * filters.limit);
 
       const total = await Movie.countDocuments(query);
 
       return {
-        data: movies,
-        totalPages: Math.ceil(total / limit),
-        currentPage: page,
+        data: content,
+        totalPages: Math.ceil(total / filters.limit),
+        currentPage: filters.page,
         total,
+        filters: {
+          type: filters.type,
+          genre: filters.genre,
+          rating: filters.rating,
+          year: filters.year,
+          status: filters.status,
+          trending: filters.trending,
+        },
       };
     } catch (error) {
-      throw new Error(`Error fetching movies: ${error.message}`);
+      throw new Error(`Error fetching content: ${error.message}`);
     }
   }
 
@@ -45,11 +96,11 @@ class MovieService {
     try {
       const movie = await Movie.findById(id);
       if (!movie) {
-        throw new Error("Movie not found");
+        throw new Error("Content not found");
       }
       return movie;
     } catch (error) {
-      throw new Error(`Error fetching movie: ${error.message}`);
+      throw new Error(`Error fetching content: ${error.message}`);
     }
   }
 
@@ -61,12 +112,12 @@ class MovieService {
       });
 
       if (!movie) {
-        throw new Error("Movie not found");
+        throw new Error("Content not found");
       }
 
       return movie;
     } catch (error) {
-      throw new Error(`Error updating movie: ${error.message}`);
+      throw new Error(`Error updating content: ${error.message}`);
     }
   }
 
@@ -75,83 +126,91 @@ class MovieService {
       const movie = await Movie.findByIdAndDelete(id);
 
       if (!movie) {
-        throw new Error("Movie not found");
+        throw new Error("Content not found");
       }
 
       return movie;
     } catch (error) {
-      throw new Error(`Error deleting movie: ${error.message}`);
+      throw new Error(`Error deleting content: ${error.message}`);
     }
   }
 
-  async getTrendingMovies(limit = 10, type = null) {
-    try {
-      const query = { rating: { $gte: 7.0 } };
-      
-      if (type) {
-        query.type = type;
-      }
+  async buildSearchConditions(query, type) {
+    const isNumber = !isNaN(Number(query));
 
-      const movies = await Movie.find(query)
-        .sort({ rating: -1, releaseYear: -1 })
-        .limit(limit);
+    const searchConditions = [
+      { title: { $regex: query, $options: "i" } },
+      { description: { $regex: query, $options: "i" } },
+    ];
 
-      return {
-        data: movies,
-        totalPages: 1,
-        currentPage: 1,
-        total: movies.length,
-      };
-    } catch (error) {
-      throw new Error(`Error fetching trending movies: ${error.message}`);
+    // Genre search (partial match in array)
+    searchConditions.push({ genre: { $in: [new RegExp(query, "i")] } });
+
+    // Type-specific search fields
+    if (!type || type === 'movie') {
+      searchConditions.push({ director: { $regex: query, $options: "i" } });
     }
+    
+    if (!type || type === 'series') {
+      searchConditions.push({ creator: { $regex: query, $options: "i" } });
+      searchConditions.push({ cast: { $in: [new RegExp(query, "i")] } });
+    }
+
+    // Year search
+    if (isNumber) {
+      searchConditions.push({ releaseYear: Number(query) });
+    }
+
+    return searchConditions;
   }
 
-  async searchMovies(query, page = 1, limit = 10, type = null) {
+  async searchContent(filters) {
     try {
-      const isNumber = !isNaN(Number(query));
-
-      const searchConditions = [
-        { title: { $regex: query, $options: "i" } },
-        { description: { $regex: query, $options: "i" } },
-        { genre: { $regex: query, $options: "i" } },
-      ];
-
-      // Add type-specific search fields
-      if (!type || type === 'movie') {
-        searchConditions.push({ director: { $regex: query, $options: "i" } });
-      }
+      const searchConditions = await this.buildSearchConditions(filters.query, filters.type);
       
-      if (!type || type === 'series') {
-        searchConditions.push({ creator: { $regex: query, $options: "i" } });
-        searchConditions.push({ cast: { $regex: query, $options: "i" } });
+      let searchQuery = { $or: searchConditions };
+
+      // Apply additional filters to search
+      if (filters.type && ['movie', 'series'].includes(filters.type)) {
+        searchQuery.type = filters.type;
       }
 
-      if (isNumber) {
-        searchConditions.push({ releaseYear: Number(query) });
+      if (filters.genre) {
+        searchQuery.genre = { $in: [filters.genre] };
       }
 
-      const filter = { $or: searchConditions };
-      
-      if (type) {
-        filter.type = type;
+      if (filters.rating) {
+        searchQuery.rating = { $gte: filters.rating };
       }
 
-      const movies = await Movie.find(filter)
-        .sort({ rating: -1 })
-        .limit(limit)
-        .skip((page - 1) * limit);
+      if (filters.year) {
+        searchQuery.releaseYear = filters.year;
+      }
 
-      const total = await Movie.countDocuments(filter);
+      const sort = await this.buildSort(filters.sortBy, filters.sortOrder);
+
+      const content = await Movie.find(searchQuery)
+        .sort(sort)
+        .limit(filters.limit)
+        .skip((filters.page - 1) * filters.limit);
+
+      const total = await Movie.countDocuments(searchQuery);
 
       return {
-        data: movies,
-        totalPages: Math.ceil(total / limit),
-        currentPage: page,
+        data: content,
+        totalPages: Math.ceil(total / filters.limit),
+        currentPage: filters.page,
         total,
+        searchQuery: filters.query,
+        filters: {
+          type: filters.type,
+          genre: filters.genre,
+          rating: filters.rating,
+          year: filters.year,
+        },
       };
     } catch (error) {
-      throw new Error(`Error searching movies: ${error.message}`);
+      throw new Error(`Error searching content: ${error.message}`);
     }
   }
 }

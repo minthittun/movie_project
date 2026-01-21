@@ -2,34 +2,29 @@ import axios from "axios";
 import apiConfig from "../utils/api";
 
 const contentService = {
-  // Movies
-  getMovies: async (page = 1, limit = 10) => {
-    try {
-      const response = await axios.get(
-        `${apiConfig.baseURL}/movies?page=${page}&limit=${limit}&type=movie`,
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch movies");
-    }
+  // Build query string from parameters
+  buildQueryString: (params) => {
+    const query = new URLSearchParams();
+    Object.keys(params).forEach(key => {
+      if (params[key] !== null && params[key] !== undefined && params[key] !== '') {
+        query.append(key, params[key]);
+      }
+    });
+    return query.toString();
   },
 
-  // Series
-  getSeries: async (page = 1, limit = 10) => {
+  // Unified content endpoint with filters
+  getContent: async (filters = {}) => {
     try {
-      const response = await axios.get(
-        `${apiConfig.baseURL}/series?page=${page}&limit=${limit}`,
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch series");
-    }
-  },
-
-  // All content
-  getContent: async (page = 1, limit = 10, type = null) => {
-    try {
-      const url = `${apiConfig.baseURL}/content?page=${page}&limit=${limit}${type ? `&type=${type}` : ''}`;
+      const defaultFilters = {
+        page: 1,
+        limit: 10,
+        ...filters
+      };
+      
+      const queryString = contentService.buildQueryString(defaultFilters);
+      const url = `${apiConfig.baseURL}/content${queryString ? `?${queryString}` : ''}`;
+      
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
@@ -37,65 +32,56 @@ const contentService = {
     }
   },
 
-  // Trending
-  getTrendingMovies: async () => {
-    try {
-      const response = await axios.get(
-        `${apiConfig.baseURL}/movies/trending?limit=10&type=movie`,
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch trending movies");
-    }
+  // Movies specific
+  getMovies: async (page = 1, limit = 10, filters = {}) => {
+    return contentService.getContent({
+      type: 'movie',
+      page,
+      limit,
+      ...filters
+    });
   },
 
-  getTrendingSeries: async () => {
-    try {
-      const response = await axios.get(
-        `${apiConfig.baseURL}/series/trending?limit=10`,
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch trending series");
-    }
+  // Series specific
+  getSeries: async (page = 1, limit = 10, filters = {}) => {
+    return contentService.getContent({
+      type: 'series',
+      page,
+      limit,
+      ...filters
+    });
   },
 
-  getTrendingContent: async (type = null) => {
-    try {
-      const url = `${apiConfig.baseURL}/content/trending?limit=10${type ? `&type=${type}` : ''}`;
-      const response = await axios.get(url);
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch trending content");
-    }
+  // Trending content
+  getTrendingContent: async (type = null, limit = 10) => {
+    return contentService.getContent({
+      trending: true,
+      limit,
+      ...(type && { type })
+    });
   },
 
-  // Search
-  searchMovies: async (query, page = 1, limit = 10) => {
-    try {
-      const response = await axios.get(
-        `${apiConfig.baseURL}/movies/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to search movies");
-    }
+  getTrendingMovies: async (limit = 10) => {
+    return contentService.getTrendingContent('movie', limit);
   },
 
-  searchSeries: async (query, page = 1, limit = 10) => {
-    try {
-      const response = await axios.get(
-        `${apiConfig.baseURL}/series/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to search series");
-    }
+  getTrendingSeries: async (limit = 10) => {
+    return contentService.getTrendingContent('series', limit);
   },
 
-  searchContent: async (query, page = 1, limit = 10, type = null) => {
+  // Unified search
+  searchContent: async (query, page = 1, limit = 10, filters = {}) => {
     try {
-      const url = `${apiConfig.baseURL}/content/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}${type ? `&type=${type}` : ''}`;
+      const searchFilters = {
+        query,
+        page,
+        limit,
+        ...filters
+      };
+      
+      const queryString = contentService.buildQueryString(searchFilters);
+      const url = `${apiConfig.baseURL}/content/search${queryString ? `?${queryString}` : ''}`;
+      
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
@@ -103,10 +89,25 @@ const contentService = {
     }
   },
 
+  // Search specific types
+  searchMovies: async (query, page = 1, limit = 10, filters = {}) => {
+    return contentService.searchContent(query, page, limit, {
+      type: 'movie',
+      ...filters
+    });
+  },
+
+  searchSeries: async (query, page = 1, limit = 10, filters = {}) => {
+    return contentService.searchContent(query, page, limit, {
+      type: 'series',
+      ...filters
+    });
+  },
+
   // Get by ID
   getContentById: async (id) => {
     try {
-      const response = await axios.get(`${apiConfig.baseURL}/movies/${id}`);
+      const response = await axios.get(`${apiConfig.baseURL}/content/${id}`);
       return response.data.data;
     } catch (error) {
       throw new Error("Failed to fetch content details");
