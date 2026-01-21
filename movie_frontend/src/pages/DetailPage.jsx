@@ -5,7 +5,7 @@ import ErrorMessage from "../components/ErrorMessage";
 import useContentStore from "../store/movieStore";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
-const ContentDetailPage = () => {
+const DetailPage = () => {
   const { id } = useParams();
   const { selectedContent, loading, error, fetchContentById } = useContentStore();
 
@@ -15,6 +15,11 @@ const ContentDetailPage = () => {
       window.scrollTo(0, 0);
     }
   }, [id, fetchContentById]);
+
+  // Set dynamic title with content title and type or fallback
+  const contentType = selectedContent?.type || 'movie';
+  const isSeries = contentType === 'series';
+  useDocumentTitle(selectedContent ? `${selectedContent.title} (${isSeries ? 'Series' : 'Movie'})` : "Loading...");
 
   const getYear = (releaseYear) => {
     if (!releaseYear) return "N/A";
@@ -68,7 +73,6 @@ const ContentDetailPage = () => {
   }
 
   if (!selectedContent) {
-    useDocumentTitle("Content Not Found");
     return (
       <div className="main-content">
         <div className="error">
@@ -80,12 +84,6 @@ const ContentDetailPage = () => {
       </div>
     );
   }
-
-  const contentType = selectedContent.type || 'movie';
-  const isSeries = contentType === 'series';
-
-  // Set dynamic title with content title and type
-  useDocumentTitle(`${selectedContent.title} (${isSeries ? 'Series' : 'Movie'})`);
 
   return (
     <div className="main-content">
@@ -261,4 +259,4 @@ const ContentDetailPage = () => {
   );
 };
 
-export default ContentDetailPage;
+export default DetailPage;

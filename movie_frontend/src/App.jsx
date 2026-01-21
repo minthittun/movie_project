@@ -5,8 +5,7 @@ import HomePage from "./pages/HomePage";
 import MoviesPage from "./pages/MoviesPage";
 import SeriesPage from "./pages/SeriesPage";
 import SearchPage from "./pages/SearchPage";
-import ContentDetailPage from "./pages/ContentDetailPage";
-import MovieDetailPage from "./pages/MovieDetailPage";
+import DetailPage from "./pages/DetailPage";
 import "./styles/index.css";
 import "./styles/movieDetail.css";
 import "./styles/content.css";
@@ -20,9 +19,8 @@ function App() {
         <Route path="/movies" element={<MoviesPage />} />
         <Route path="/series" element={<SeriesPage />} />
         <Route path="/search" element={<SearchPage />} />
-        <Route path="/movie/:id" element={<MovieDetailPage />} />
-        <Route path="/content/:id" element={<ContentDetailPage />} />
-        <Route path="/series/:id" element={<ContentDetailPage />} />
+        <Route path="/movie/:id" element={<DetailPage />} />
+        <Route path="/series/:id" element={<DetailPage />} />
       </Routes>
     </Router>
   );
