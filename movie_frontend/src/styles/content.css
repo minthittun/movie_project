@@ -19,7 +19,11 @@
 /* Movie Card Type Badge */
 .movie-card .content-type-badge,
 .small-card .content-type-badge {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(147, 51, 234, 0.9));
+  background: linear-gradient(
+    135deg,
+    rgba(229, 9, 20, 0.6),
+    rgba(229, 9, 20, 0.6)
+  );
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -67,12 +71,12 @@
     justify-content: center;
     margin-bottom: 16px;
   }
-  
+
   .search-type-filters .btn {
     padding: 6px 12px;
     font-size: 0.85rem;
   }
-  
+
   .content-type-badge {
     font-size: 0.7rem;
     padding: 3px 6px;

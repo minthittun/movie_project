@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 const useDocumentTitle = (title) => {
   useEffect(() => {
-    const defaultTitle = 'MovieStream';
-    const newTitle = title ? `${title} - MovieStream` : defaultTitle;
+    const defaultTitle = "MovieStream";
+    const newTitle = title ? `${title} - CineDex` : defaultTitle;
     document.title = newTitle;
-    
+
     return () => {
       document.title = defaultTitle;
     };
