@@ -113,6 +113,25 @@ const contentService = {
       throw new Error("Failed to fetch content details");
     }
   },
+
+  // Streaming endpoints
+  getStreamingInfo: async (id) => {
+    try {
+      const response = await axios.get(`${apiConfig.baseURL}/content/${id}/streaming`);
+      return response.data.data;
+    } catch (error) {
+      throw new Error("Failed to fetch streaming info");
+    }
+  },
+
+  updateStreamingUrl: async (id, streamingData) => {
+    try {
+      const response = await axios.put(`${apiConfig.baseURL}/content/${id}/streaming`, streamingData);
+      return response.data.data;
+    } catch (error) {
+      throw new Error("Failed to update streaming URL");
+    }
+  },
 };
 
 export default contentService;

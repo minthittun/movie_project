@@ -1,13 +1,17 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
+import StreamingPlayer from "../components/StreamingPlayer";
+import StreamingManager from "../components/StreamingManager";
 import useContentStore from "../store/movieStore";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const DetailPage = () => {
   const { id } = useParams();
-  const { selectedContent, loading, error, fetchContentById } = useContentStore();
+  const { selectedContent, loading, error, fetchContentById, updateStreamingUrl } = useContentStore();
+  const [showStreamingPlayer, setShowStreamingPlayer] = useState(false);
+  const [showStreamingManager, setShowStreamingManager] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -56,6 +60,42 @@ const DetailPage = () => {
     return "/movies";
   };
 
+  const handleWatchNow = () => {
+    setShowStreamingPlayer(true);
+  };
+
+  const closeStreamingPlayer = () => {
+    setShowStreamingPlayer(false);
+  };
+
+  const handleManageStreaming = () => {
+    setShowStreamingManager(true);
+  };
+
+  const closeStreamingManager = () => {
+    setShowStreamingManager(false);
+  };
+
+  const handleUpdateStreaming = async (id, streamingData) => {
+    try {
+      await updateStreamingUrl(id, streamingData);
+      // Refresh the content data
+      await fetchContentById(id);
+    } catch (error) {
+      console.error('Failed to update streaming:', error);
+      throw error;
+    }
+  };
+
+  const hasStreamingUrl = (content) => {
+    if (!content) return false;
+    if (content.type === 'movie') {
+      return !!content.streamingUrl;
+    } else {
+      return content.streamingUrls && content.streamingUrls.length > 0;
+    }
+  };
+
   if (loading) {
     return (
       <div className="main-content">
@@ -87,6 +127,23 @@ const DetailPage = () => {
 
   return (
     <div className="main-content">
+      {/* Streaming Player Modal */}
+      {showStreamingPlayer && (
+        <StreamingPlayer 
+          content={selectedContent} 
+          onClose={closeStreamingPlayer} 
+        />
+      )}
+
+      {/* Streaming Manager Modal */}
+      {showStreamingManager && (
+        <StreamingManager 
+          content={selectedContent}
+          onUpdate={handleUpdateStreaming}
+          onClose={closeStreamingManager}
+        />
+      )}
+
       <div
         className="movie-detail-backdrop"
         style={{
@@ -176,6 +233,36 @@ const DetailPage = () => {
             <p className="movie-detail-description">
               {selectedContent.description || "No description available."}
             </p>
+
+            {/* Watch Now Button */}
+            {hasStreamingUrl(selectedContent) && (
+              <div className="watch-now-section">
+                <button 
+                  onClick={handleWatchNow}
+                  className="btn btn-primary watch-now-btn"
+                >
+                  🎬 Watch Now
+                </button>
+                <button 
+                  onClick={handleManageStreaming}
+                  className="btn btn-secondary manage-streaming-btn"
+                >
+                  ⚙️ Manage Streaming
+                </button>
+              </div>
+            )}
+
+            {/* Manage Streaming Button (when no streaming URL) */}
+            {!hasStreamingUrl(selectedContent) && (
+              <div className="watch-now-section">
+                <button 
+                  onClick={handleManageStreaming}
+                  className="btn btn-secondary manage-streaming-btn"
+                >
+                  ⚙️ Add Streaming URL
+                </button>
+              </div>
+            )}
 
             {selectedContent.trailerUrl && (
               <div className="movie-trailer-section">

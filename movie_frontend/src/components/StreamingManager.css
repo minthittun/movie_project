@@ -1,0 +1,288 @@
+.streaming-manager {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1050; /* Higher than header (1030) and modal (1050) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.streaming-manager-content {
+  background: #1a1a1a;
+  border-radius: 12px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.manager-header h2 {
+  color: #fff;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  background-color: #333;
+}
+
+.error-message {
+  background: #e50914;
+  color: white;
+  padding: 15px 20px;
+  margin: 20px;
+  border-radius: 6px;
+}
+
+.movie-streaming-form,
+.series-streaming-form {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  color: #fff;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #e50914;
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+  margin-top: 30px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: #e50914;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #f40612;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #444;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #555;
+}
+
+.btn-danger {
+  background: #d32f2f;
+  color: white;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.btn-danger:hover {
+  background: #f44336;
+}
+
+.episodes-section h3 {
+  color: #fff;
+  margin: 0 0 20px 0;
+  font-size: 1.3rem;
+}
+
+.add-episode {
+  background: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.add-episode h4 {
+  color: #fff;
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+}
+
+.episode-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.existing-episodes {
+  margin-top: 30px;
+}
+
+.existing-episodes h4 {
+  color: #fff;
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+}
+
+.episodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.episode-item {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  gap: 15px;
+  align-items: center;
+  background: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.episode-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.episode-id {
+  color: #e50914;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.episode-title {
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.episode-url input {
+  width: 100%;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .streaming-manager {
+    padding: 10px;
+  }
+
+  .streaming-manager-content {
+    max-height: 95vh;
+  }
+
+  .manager-header {
+    padding: 15px;
+  }
+
+  .manager-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .movie-streaming-form,
+  .series-streaming-form {
+    padding: 15px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .episode-item {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .episode-info {
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .manager-header h2 {
+    font-size: 1rem;
+  }
+
+  .close-btn {
+    font-size: 1.5rem;
+    width: 35px;
+    height: 35px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}

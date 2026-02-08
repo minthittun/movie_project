@@ -189,6 +189,7 @@ class TMDBService {
       posterPath: tmdbMovie.poster_path,
       backdropPath: tmdbMovie.backdrop_path,
       trailerUrl: trailerUrl,
+      streamingUrl: null,
     };
   }
 
@@ -224,6 +225,7 @@ class TMDBService {
       posterPath: tmdbSeries.poster_path,
       backdropPath: tmdbSeries.backdrop_path,
       trailerUrl: trailerUrl,
+      streamingUrls: [],
     };
   }
 

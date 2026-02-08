@@ -37,10 +37,18 @@ app.get("/", (req, res) => {
       trending_series: "/api/content?type=series&trending=true",
       action_movies_high_rating: "/api/content?type=movie&genre=Action&rating=7.5",
       search: "/api/content/search?q=dragon&type=movie",
+      streaming_info: "/api/content/:id/streaming",
     },
     legacy_endpoints: {
       movies: "/api/movies (redirects to /api/content)",
       series: "/api/series (redirects to /api/content)",
+    },
+    streaming_endpoints: {
+      update_streaming: "PUT /api/content/:id/streaming",
+      get_streaming_info: "GET /api/content/:id/streaming",
+      movie_streaming_format: "{ \"url\": \"https://example.com/movie.mp4\" }",
+      series_streaming_format: "{ \"episodes\": [{ \"season\": 1, \"episode\": 1, \"url\": \"https://example.com/s1e1.mp4\", \"title\": \"Pilot\" }] }",
+      single_episode_format: "{ \"season\": 1, \"episode\": 1, \"url\": \"https://example.com/s1e1.mp4\", \"title\": \"Pilot\" }",
     },
   });
 });

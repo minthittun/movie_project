@@ -17,6 +17,7 @@ const useContentStore = create((set, get) => ({
   // Search results
   searchResults: [],
   selectedContent: null,
+  streamingInfo: null,
   
   // UI state
   loading: false,
@@ -181,6 +182,35 @@ const useContentStore = create((set, get) => ({
       set({ selectedContent: content, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
+    }
+  },
+
+  fetchStreamingInfo: async (id) => {
+    set({ loading: true, error: null });
+    try {
+      const streamingInfo = await contentService.getStreamingInfo(id);
+      set({ streamingInfo, loading: false });
+      return streamingInfo;
+    } catch (error) {
+      set({ error: error.message, loading: false });
+      throw error;
+    }
+  },
+
+  updateStreamingUrl: async (id, streamingData) => {
+    set({ loading: true, error: null });
+    try {
+      const updatedContent = await contentService.updateStreamingUrl(id, streamingData);
+      // Update selected content if it's the same one
+      const { selectedContent } = get();
+      if (selectedContent && selectedContent._id === id) {
+        set({ selectedContent: updatedContent });
+      }
+      set({ loading: false });
+      return updatedContent;
+    } catch (error) {
+      set({ error: error.message, loading: false });
+      throw error;
     }
   },
 
