@@ -170,7 +170,6 @@ class MovieController {
 
     try {
       const rewrittenM3U8 = await movieService.rewriteM3U8(key, filename);
-
       res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
       res.send(rewrittenM3U8);
     } catch (error) {

@@ -1,5 +1,9 @@
 import Movie from "../models/Movie.js";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const R2 = new S3Client({
@@ -332,6 +336,7 @@ class MovieService {
       throw new Error("Only .m3u8 files are supported");
     }
 
+    // Fetch the playlist from R2
     const command = new GetObjectCommand({
       Bucket: "movies",
       Key: `${key}/${filename}`,
@@ -340,23 +345,52 @@ class MovieService {
 
     const m3u8Response = await R2.send(command);
     const body = await streamToString(m3u8Response.Body);
-
     const lines = body.split("\n");
+
     const updatedLines = await Promise.all(
       lines.map(async (line) => {
-        if (line.trim().endsWith(".ts")) {
+        const trimmed = line.trim();
+
+        if (trimmed.endsWith(".ts")) {
+          // Sign TS segments
           const segmentCommand = new GetObjectCommand({
             Bucket: "movies",
-            Key: `${key}/${line.trim()}`,
+            Key: `${key}/${trimmed}`,
             ResponseContentType: "video/mp2t",
           });
-
           const signedUrl = await getSignedUrl(R2, segmentCommand, {
             expiresIn: 86400, // 24 hours
           });
           return signedUrl;
+        } else if (trimmed.endsWith(".m3u8")) {
+          // Recursively rewrite variant playlists
+          const variantRewritten = await this.rewriteM3U8(key, trimmed);
+
+          // Upload rewritten variant to a temporary "signed" path in R2
+          // (optional: you can just return a signed URL without uploading)
+          const tempKey = `${key}/signed/${trimmed}`;
+          await R2.send(
+            new PutObjectCommand({
+              Bucket: "movies",
+              Key: tempKey,
+              Body: variantRewritten,
+              ContentType: "application/vnd.apple.mpegurl",
+            }),
+          );
+
+          // Return signed URL for the variant playlist
+          const variantCommand = new GetObjectCommand({
+            Bucket: "movies",
+            Key: tempKey,
+            ResponseContentType: "application/vnd.apple.mpegurl",
+          });
+          const signedVariantUrl = await getSignedUrl(R2, variantCommand, {
+            expiresIn: 86400,
+          });
+          return signedVariantUrl;
         }
-        return line;
+
+        return line; // keep other lines as-is
       }),
     );
 
